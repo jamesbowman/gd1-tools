@@ -1,0 +1,89 @@
+.. _faq:
+
+FAQ
+---
+
+**Is Gameduino compatible with all Arduinos?**
+
+Yes, it is just a regular shield, so works with Uno, Duemilanove, and the Mega.
+(Diecimila works also, but many of the demos and sample programs use more than
+16K of flash.)
+
+**Can the Gameduino+Arduino run on USB power or does it need an external power supply?**
+
+It can run on either.
+
+**Is it possible to have the game save states for high scores?**
+
+Yes, using `Arduino EEPROM <http://www.arduino.cc/en/Reference/EEPROM>`_.
+EEPROM is quite small (1 Kbyte on the Uno, for example) but that's plenty for a high-score table.
+
+**How fast can the Arduino write to Gameduino memory?**
+
+In the best case - a bulk transfer - the Arduino writes bytes via
+SPI directly into Gameduino RAM.  For a 16MHz Arduino this rate is
+1 Megabyte/s, peak.
+
+**Can I use the Gameduino with another microprocesor?**
+
+Yes, Gameduino needs power and the SPI connections.  See the
+:ref:`htr` for details.
+
+**Are there unused areas in the RAM?**
+
+Yes, there are a few addresses that don't do anything.
+
+**Is it possible to reuse a sprite by changing its Y coordinate after the raster passes it?**
+
+Yes, definitely.  You can stretch a single sprite the whole height of the sceeen, for example.
+Raster chasing techniques like this really need to run on the coprocessor.
+
+**I'm interest in the coprocessor - can you recommend any primers on Forth?**
+
+The classics (both online now) are Brodie's:
+
+http://www.forth.com/starting-forth/
+
+http://thinking-forth.sourceforge.net/
+
+**How fast can the coprocessor write to memory?**
+
+With a (value, pointer) pair on the stack a memory write takes two cycles, or 40 nanoseconds.
+
+**Is the coprocessor restricted to fetching instructions from 2b00-2bff?**
+
+Yes.  Main RAM is already doing triple-duty (video read, SPI r/w
+and coprocessor r/w) so it would be very difficult to also allow
+instruction fetch.  Hence the dedicated 256 byte area 2b00-2bff is
+the only place where the coprocessor can fetch instructions.
+
+However, the coprocessor can *write* to 2b00-2bff, so it can load
+fresh code from anywhere in memory. The copy function is about 32
+bytes.
+
+**Is it possible to reload the FPGA?**
+
+Yes, if you have a JTAG programmer.  The JTAG pins are on the labeled
+.1" headers on the board.  If you solder some header pins in you can
+use a JTAG programmer to update the FPGA.  You can also reload the onboard flash
+with a new boot
+image, see `Xilinx application note XAPP974 <http://www.xilinx.com/support/documentation/application_notes/xapp974.pdf>`_.
+
+**The SAMPLE_L and SAMPLE_R registers are documented as being signed sixteen bit words. Does this mean GD can play 16 bit samples**
+
+Yes, they are sixteen bits, because internal audio calculations are done at 16-bit precision, before being sent to the audio output at 8-bits. So GD can play 16-bit samples but you might not hear the difference. 
+
+**To play 8 bit samples do I need to sign-extend the values to 16 bits?**
+
+To play 8-bit samples - as the :ref:`cowbell` example does - you
+write the high byte of the SAMPLE register with the 8-bit signed
+value (i.e. -128 to +127) and ignore the low byte.
+
+**Is the Gameduino shield stackable?**
+
+Yes, it uses stackable headers, so you can put more shields on top of it.  Gameduino works fine with the Ethernet shield, but note that the Ethernet shield uses the ICSP pins, so needs to be the bottom shield in the stack:
+
+  .. image:: gd_ether.jpg
+    :scale: 50
+
+Last modified $Date: 2011-05-13 11:32:42 -0700 (Fri, 13 May 2011) $

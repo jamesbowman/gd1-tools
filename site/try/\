@@ -1,0 +1,63 @@
+
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link type="text/css" href="/static/css/custom-theme/jquery-ui-1.8.14.custom.css" rel="Stylesheet" />  
+    <link href='/static/can.css' rel='stylesheet' type='text/css'/>
+    <title>Demo</title>
+  </head>
+  <body>
+    <h1>Test</h1>
+    <input type="text" name="date" id="date" />
+    <canvas id="can" width="512" height="512" > </canvas>
+    <div id="clr"> <div style="background-color:black;"></div> <div style="background-color:red;"></div> <div style="background-color:green;"> </div> <div style="background-color:orange;"> </div> ... </div> <a href="#" id="clear" >Clear</a> <a id="save" href="#">Save</a> <a id="eraser" href="#">Eraser</a> <span id="result" ></span>
+    <script src="/static/jquery-1.6.1.min.js"></script>
+    <script type="text/javascript" src="/static/js/jquery-ui-1.8.14.custom.min.js"></script>
+    <script src="/static/codes.js"></script>
+    <script>
+$(document).ready(function() {
+      var img = new Image();
+      img.onload = function() {
+          $('#date').datepicker();
+
+          var canvas = document.getElementById("can");
+          var ctx = canvas.getContext("2d");
+
+          ctx.drawImage(img, 0, 0);
+
+          function xys(x, y) {
+            return x.toString() + "," + y.toString();
+          }
+
+          var i, j;
+
+          ctx.drawImage(img, 0, 0);
+          $("#can").mouseleave(function(e) {
+            ctx.drawImage(img, 0, 0);
+          });
+          $("#can").mousemove(function(e) {
+            ctx.drawImage(img, 0, 0);
+            ctx.globalAlpha = 0.5;
+            ctx.fillRect(0, 0, img.width, img.height);
+            ctx.globalAlpha = 1.0;
+
+            var offset = $("#can").offset();
+            var x = e.pageX - offset.left;
+            var y = e.pageY - offset.top;
+            var code = tilecode[xys(Math.floor(x / 8), Math.floor(y / 8))];
+            var tiles = codetiles[code];
+            for (var x = 0; x < tiles.length; x++) {
+              ti = tiles[x];
+              i = ti[0] * 8;
+              j = ti[1] * 8;
+              ctx.drawImage(img, i, j, 8, 8, i, j, 8, 8);
+            }
+          });
+      }
+      img.src = "http://excamera.com/sphinx/_images/splitscreen.png";
+});
+
+    </script>
+  </body>
+</html>

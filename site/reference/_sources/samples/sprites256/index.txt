@@ -1,0 +1,34 @@
+.. index::
+  pair: 256 sprites; example
+
+.. _sprites256:
+
+sprites256
+^^^^^^^^^^
+
+.. image:: sprites256-screenshot.png
+  :scale: 33
+
+.. raw:: html
+
+  <object width="400" height="300"><param name="movie" value="http://www.youtube.com/v/awgw1lj7KKI&hl=en_US&feature=player_embedded&version=3"></param><param name="allowFullScreen" value="true"></param><param name="allowScriptAccess" value="always"></param><embed src="http://www.youtube.com/v/awgw1lj7KKI&hl=en_US&feature=player_embedded&version=3" type="application/x-shockwave-flash" allowfullscreen="true" allowScriptAccess="always" width="400" height="300"></embed></object>
+
+This short example shows the maximum number of hardware sprites moving on screen.
+
+First it loads a background image into character RAM:
+
+.. image:: sprites256.png
+  :scale: 33
+
+then loads 47 sprite images into sprite image RAM:
+
+.. image:: pickups2.png
+
+The loop moves all 256 sprites, bouncing then off the screen edges.
+
+.. literalinclude:: ../../../files/gameduino/synth/sketches/sprites256.pde
+  :language: c++
+
+Thanks to `SpriteLib GPL <http://www.flyingyogi.com/fun/spritelib.html>`_ for the sprite images.
+
+Last modified $Date: 2011-05-19 21:55:05 -0700 (Thu, 19 May 2011) $

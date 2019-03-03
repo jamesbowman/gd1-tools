@@ -1,0 +1,151 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Cookbook &mdash; gameduino</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="top" title="gameduino" href="index.html" />
+    <link rel="next" title="Resources for creating media" href="resources.html" />
+    <link rel="prev" title="The Gameduino Python package" href="python.html" /> 
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-19722717-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  </head>
+  <body>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="cookbook">
+<span id="id1"></span><h1>Cookbook<a class="headerlink" href="#cookbook" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="use-progmem-for-graphics-data">
+<span id="progmem"></span><h2>Use PROGMEM for graphics data<a class="headerlink" href="#use-progmem-for-graphics-data" title="Permalink to this headline">¶</a></h2>
+<p>As explained on this page, <a class="reference external" href="http://www.arduino.cc/playground/Learning/Memory">http://www.arduino.cc/playground/Learning/Memory</a>
+there are two types of memory in the Arduino: Flash and SRAM.  Flash
+is relatively plentiful, so it is much better to put graphics data
+into the Arduino&#8217;s Flash.  To do this, use the PROGMEM keyword.
+Here is a sprite image that uses the PROGMEM modifier to force the
+data into Flash:</p>
+<div class="highlight-python"><pre>PROGMEM prog_uchar image4[] = {
+0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0x0f,
+0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0x28,
+0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0x2d,
+0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0x60, 0x00, 0x00, 0x8b, 0xe1, 0xe1, 0xe1, 0xe1, 0xbe,
+0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xb6, 0x00, 0x00, 0x00, 0xb6, 0xe1, 0xe1, 0xe1, 0xe1, 0xc3,
+0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0x35, 0x0b, 0x00, 0x00, 0x8b, 0xe1, 0xe1, 0xe1, 0xe1, 0xdc,
+0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0x8b, 0x00, 0x8b, 0x00, 0x00, 0xb6, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1,
+0xe1, 0xe1, 0xe1, 0xe1, 0xbd, 0x00, 0x60, 0xe1, 0x00, 0x00, 0x8b, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1,
+0xe1, 0xe1, 0xe1, 0xe1, 0x60, 0x00, 0xb6, 0xe1, 0x00, 0x00, 0xb6, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1,
+0xe1, 0xe1, 0xe1, 0x8b, 0x00, 0x8b, 0xe1, 0xe1, 0x00, 0x00, 0x8b, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1,
+0xe1, 0xe1, 0xe1, 0x8b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x8b, 0xe1, 0xe1, 0xe1, 0xe1,
+0xe1, 0xe1, 0xe1, 0x60, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x60, 0xe1, 0xe1, 0xe1, 0xe1,
+0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0x00, 0x00, 0x8b, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1,
+0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0x00, 0x00, 0xaf, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1,
+0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0x00, 0x00, 0x92, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1,
+0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1, 0xe1,
+};</pre>
+</div>
+</div>
+<div class="section" id="fade-to-black">
+<h2>Fade to black<a class="headerlink" href="#fade-to-black" title="Permalink to this headline">¶</a></h2>
+<p>To fade the background graphics to black, you can loop over the
+character&#8217;s colors, decrementing R,G,B until they reach zero.  Spread
+over a second or so (the outer loop below), this produces a nice
+fade-to-black effect.</p>
+</div>
+<div class="section" id="smooth-sprite-animation">
+<span id="doublebuffer"></span><h2>Smooth sprite animation<a class="headerlink" href="#smooth-sprite-animation" title="Permalink to this headline">¶</a></h2>
+<p>For really smooth sprite animation, you need to synchronize the
+sprite updates with the vertical refresh.  It&#8217;s not strictly necessary
+to do this - for example, <a class="reference internal" href="samples/sprites256/index.html#sprites256"><em>sprites256</em></a> doesn&#8217;t, but <a class="reference internal" href="samples/asteroids/index.html#asteroids"><em>asteroids</em></a>
+does.</p>
+<p>One way is to double-buffer the sprite updates: you write new sprite
+values into page 0, while displaying page 1, then display page 1
+while updating page 0.  Here&#8217;s the code from <a class="reference internal" href="samples/asteroids/index.html#asteroids"><em>asteroids</em></a> that
+starts the write into page 0 or 1, depending on whether the frame
+counter <tt class="docutils literal"><span class="pre">r</span></tt> is odd or even:</p>
+<p>and to do the actual flip: wait for vertical refresh then change the SPR_PAGE register:</p>
+</div>
+<div class="section" id="square-and-sawtooth-waves">
+<h2>Square and sawtooth waves<a class="headerlink" href="#square-and-sawtooth-waves" title="Permalink to this headline">¶</a></h2>
+<p>The hardware audio voices only generate sine waves and noise - so
+how do you create the square and sawtooth waves of old video games?
+By summing up a few sine waves to get a close approximation to that
+original 8-bit sound.</p>
+<p>Sawtooth is simpler; this function uses voices 0-3 to make the sound of a sawtooth wave:</p>
+<p>Sample at 440Hz is here <a class="reference download internal" href="_downloads/sawtooth440.wav"><tt class="xref download docutils literal"><span class="pre">sawtooth440.wav</span></tt></a></p>
+<p>and for square waves the math is only slightly more complicated:</p>
+<p>Sample is here <a class="reference download internal" href="_downloads/square440.wav"><tt class="xref download docutils literal"><span class="pre">square440.wav</span></tt></a></p>
+<p>Last modified $Date: 2011-05-13 11:32:42 -0700 (Fri, 13 May 2011) $</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <p class="logo"><a href="/sphinx/gameduino/">
+    <img class="logo" src="_static/gdlogo.png" alt="Logo"/>
+  </a></p>
+  <p class="logo"><a href="/sphinx/index.html">
+    <img class="logo" src="_static/tinylogo.png" alt="Logo"/>
+  </a></p>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search termKLAKKKs or a module, class or function name.
+    </p>
+</div>
+<div style="padding-left:40px;" >
+
+</div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011 James Bowman.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
+    </div>
+  </body>
+</html>

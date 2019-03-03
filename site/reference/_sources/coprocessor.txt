@@ -1,0 +1,333 @@
+.. _coprocessor:
+
+Coprocessor
+-----------
+
+.. contents::
+
+The coprocessor is a small 16-bit CPU that has direct access to all
+of the Gameduino memory and registers.  It executes code from the
+256 bytes at 2b00-2bff, enough for 128 16-bit instructions.
+
+The coprocessor is completely free for your application to use: in
+normal operation of the Gameduino, it is idle.  Some possible uses of the
+coprocessor:
+
+ * fast copies and clears ("blits") of video memory
+ * line, circle and triangle drawing using a :ref:`bitmap`, see :ref:`wireframe`
+ * split-screen effects by changing registers mid-frame, see :ref:`splitscreen` and :ref:`bgcolor`
+
+The coprocessor's CPU is a modified version of the `J1 CPU
+<http://www.excamera.com/sphinx/fpga-j1.html>`_.  It executes
+instructions from its instruction RAM, and can perform read/writes
+to any location in the 32K Gameduino address space, including its
+own instruction RAM.
+
+Some highlights of the coprocessor
+
+ * 50 MIPS
+ * 16-bit internal bus
+ * 8-bit memory interface, can read/write all memory locations
+ * Single-cycle 16x16 bit multiply, plus barrel shifter
+ * Fast, efficient stack machine
+
+For more details of the coprocessor, see `The J1 Forth CPU
+<http://www.excamera.com/sphinx/fpga-j1.html>`_ and 
+the directory ``j1firmware`` in the sample sketches.
+
+.. index:: gforth, binle, binbe, lst, helloworld, Forth
+
+Hello World: compiling and loading
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+As a simple example, this microprogram writes 'HELLO WORLD' to address 512 (screen line 8) character RAM:
+
+.. literalinclude:: ../files/gameduino/synth/sketches/j1firmware/helloworld.fs
+  :language: none
+
+Microprograms begin with the ``start-microprogram`` word, and end with ``end-microprogram``.  The
+assembly language is Forth-like, with word definitions preceded by ``:`` and ended with ``;``.
+The entry point is the ``main`` word, which should not return - here it loops indefinitely with the
+words ``begin again``.
+
+To compile it, download and unpack the
+`coprocessor SDK </files/gameduino/synth/sketches/j1firmware.zip>`_,
+and run the assembler::
+
+   $ gforth -e 'include main.fs bye'
+
+This runs the assembler on all the microprograms listed in ``main.fs``.  The source program ``helloworld.fs``
+is assembled to four object files:
+
++------------------+------------------------------------------------------+
+| helloworld.lst   | Listing file, for your reading pleasure              |
++------------------+------------------------------------------------------+
+| helloworld.binle | Binary file, little-endian                           |
++------------------+------------------------------------------------------+
+| helloworld.binbe | Binary file, big-endian                              |
++------------------+------------------------------------------------------+
+| helloworld.h     | Header file, for use with :cpp:func:`GD::microcode`  |
++------------------+------------------------------------------------------+
+
+The ``.h`` format is easiest to use in a sketch:
+
+.. literalinclude:: ../files/gameduino/synth/sketches/helloworld.pde
+  :language: cpp
+
+results in:
+
+.. image:: helloworld.png
+
+Execution
+^^^^^^^^^
+
+When the control register ``J1_RESET`` is set to 1, the coprocessor is halted.
+When set to 0, the coprocessor starts execution with the instruction
+at address 2b00.  The microprogram should not return: it should instead loop
+indefinitely.
+
+For the Arduino, the procedure for loading a microprogram is:
+
+ * write 1 to ``J1_RESET`` to halt the coprocessor
+ * write the program bytes to 2b00-2bff
+ * write 0 to ``J1_RESET`` to start execution at 2b00
+
+This is done in the GD library by :cpp:func:`GD::microcode`.
+
+.. index:: COMM
+
+Memory
+^^^^^^
+
+The coprocessor is a 16-bit CPU, and the Gameduino's RAM is byte-wide.
+So the coprocessor must access the memory as bytes.  This means
+that read instructions fill the upper 8 bit of the value with zeroes,
+and that write instructions ignore the upper 8 bits of the value.
+
+The memory access instructions
+`c@ <http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.0870>`_
+and
+`c! <http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.0850>`_
+each execute in two cycles.
+
+To ease working with these byte quantities, there is a ``swab``
+micro-instruction which swaps the low and high bytes of a 16-bit
+word.  Using this word to implement the 16-bit access words
+`@ <http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.0650>`_
+and
+`! <http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.0010>`_
+gives::
+
+  : 1+    d# 1 + ;
+  : @     dup c@ swap 1+ c@ swab or ;
+  : !     over swab over 1+ c! c! ;
+
+An 48-byte area of memory (``COMM``) is set aside for Arduino-coprocessor
+communication.  Any area of memory can be used for communication,
+but ``COMM`` is useful because it is not used for anything else.
+
+.. index:: Stacks
+
+Stacks
+^^^^^^
+
+There are two stacks: the data stack for general use, and the return stack for
+subroutine return addresses.  The data stack is 33 cells deep.
+The return stack is 32 cells deep.
+Both stacks wrap on overflow.
+
+The return stack is accessible by the standard Forth words
+`>r       <http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.0580>`_
+`r>       <http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.2060>`_
+and
+`r@       <http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.2070>`_.
+
+Word reference
+^^^^^^^^^^^^^^
+
+**Directives**
+
+``start-microprogram N`` Begin assembling microprogram named N.
+
+``end-microprogram`` Mark end of microprogram
+
+**Literals**
+
+The assembler allows decimal literals by prefixing the number with
+``d#``.  Hexadecimal literals are preceded by ``h#``.  Both have
+the effect of pushing the literal value on the stack.  The standard Forth
+word ``[CHAR]`` is also supported.
+
+**Defining words**
+
+The assembler uses the standard Forth defining words:
+
+``:`` starts the definition of a new word and ``;`` ends it
+
+``constant`` defines a constant
+
+**Operations**
+
+The following standard Forth words are single instructions:
+
+`+        <http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.0120>`_
+`1-       <http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.0300>`_
+`=        <http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.0530>`_
+`<        <http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.0480>`_
+`u<       <http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.2340>`_
+`xor      <http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.2490>`_
+`and      <http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.0720>`_
+`or       <http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.1980>`_
+`invert   <http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.1720>`_
+`swap     <http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.2260>`_
+`dup      <http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.1290>`_
+`drop     <http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.1260>`_
+`over     <http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.1990>`_
+`nip      <http://forth.sourceforge.net/std/dpans/dpans6.htm#6.2.1930>`_
+`>r       <http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.0580>`_
+`r>       <http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.2060>`_
+`r@       <http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.2070>`_
+`c@       <http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.0870>`_
+`c!       <http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.0850>`_
+`rshift   <http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.2162>`_
+`*        <http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.0090>`_
+
+These single instructions are not part of ANS Forth:
+
+``swab`` exchange the upper and lower bytes of the item on top of stack
+
+``2dup=`` equivalent to ``2DUP =``
+
+``2dupxor`` equivalent to ``2DUP XOR``
+
+There are several other merged operations; see the included file in basewords.fs for a complete list.
+
+**Control flow**
+
+``if else then`` as in Forth, see `IF <http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.1700>`_
+
+``begin until`` as in Forth, see `UNTIL <http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.2390>`_
+
+``begin again`` as in Forth, see `AGAIN <http://forth.sourceforge.net/std/dpans/dpans6.htm#6.2.0700>`_
+
+``begin while repeat`` as in Forth, see `WHILE <http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.2430>`_
+
+Saving space
+^^^^^^^^^^^^
+
+The coprocessor has a *tiny* code space, but with careful coding
+quite complex algorithms can be made to fit.
+
+**Use subroutines whenever possible**  The J1 CPU executes a call
+instruction in 1 cycle, and a return instruction is usually free.
+So almost any repeated sequence of instructions is worth factoring
+out into a common subroutine.
+
+**Exploit the free return** The assembler can optimize out the last return of a
+subroutine in two cases: when the return can be combined with
+a preceding arithmetic instruction, and when the preceding instruction is a
+call, in which case the assembler replaces the call with a jump.
+
+**Use the merged operations**  The merged operations are useful for loops.  For example to count from ``LOWER`` to ``UPPER``, you can do::
+
+  UPPER LOWER
+  begin
+    ...
+    1+ 2dup=   \ leaves TRUE when counter reaches UPPER
+  until
+
+**Exploit fallthru**  The assembler has a non-standard word
+``;fallthru`` which marks the end of a word definition but does not
+assemble a return instruction.  The effect is that execution falls
+through into the next defined word.  So code like this::
+
+  : >         swap < ;
+  : 0>        d# 0 > ;
+
+can be rewritten to use ``;fallthru``, saving an instruction::
+
+  : 0>        d# 0 ;fallthru
+  : >         swap < ;
+
+Examples
+^^^^^^^^
+
+The sample :ref:`wireframe` uses the coprocessor to accelerate line
+drawing, and :ref:`splitscreen` uses the coprocessor to achieve a
+smooth 3-window scroll.  This microprogram is also used in the
+:ref:`asteroids` demo game to split the screen into three sections.
+
+.. index::
+  pair: register; YLINE
+  pair: register; RANDOM
+  pair: register; ICAP
+  pair: register; P2
+  pair: register; CLOCK
+  pair: register; FLASH
+  single: pin 2
+
+Coprocessor-only registers
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In addition to the regular 32Kbyte address space at 0x0000-0x7fff,
+the coprocessor has access to the following 16-bit internal registers,
+starting at address 0x8000:
+
++--------+--------------+----+-----------------------------------------------------------------------------------------------------------------+
+| 0x8000 | YLINE        | R  | Current raster Y line 0-299.  Values during vertical blank are undefined.                                       |
++--------+--------------+----+-----------------------------------------------------------------------------------------------------------------+
+| 0x8002 | ICAP_O       | R  | FPGA ICAP port, 8-bit output                                                                                    |
++--------+--------------+----+-----------------------------------------------------------------------------------------------------------------+
+| 0x8006 | ICAP         | W  | ICAP_WRITE (10), ICAP_CE (9), ICAP_CLK (8), ICAP_I (7-0)                                                        |
++--------+--------------+----+-----------------------------------------------------------------------------------------------------------------+
+| 0x800a | FREQHZ       | W  | timer freqency in Hz, 16-bit unsigned. Reset value is 8000.                                                     |
++--------+--------------+----+-----------------------------------------------------------------------------------------------------------------+
+| 0x800c | FREQTICK     | R  | 8-bit counter, increments at frequency FREQHZ                                                                   |
++--------+--------------+----+-----------------------------------------------------------------------------------------------------------------+
+| 0x800e | P2_V         | RW | Pin 2 value 0-1                                                                                                 |
++--------+--------------+----+-----------------------------------------------------------------------------------------------------------------+
+| 0x8010 | P2_DIR       | R  | Pin 2 direction, 0=output 1=input.  Reset value is 1.                                                           |
++--------+--------------+----+-----------------------------------------------------------------------------------------------------------------+
+| 0x8012 | RANDOM       | R  | 16-bit random number                                                                                            |
++--------+--------------+----+-----------------------------------------------------------------------------------------------------------------+
+| 0x8014 | CLOCK        | R  | 16-bit 50MHz clock                                                                                              |
++--------+--------------+----+-----------------------------------------------------------------------------------------------------------------+
+| 0x8016 | FLASH_MISO   | R  | SPI flash MISO                                                                                                  |
++--------+--------------+----+-----------------------------------------------------------------------------------------------------------------+
+| 0x8018 | FLASH_MOSI   | W  | SPI flash MOSI                                                                                                  |
++--------+--------------+----+-----------------------------------------------------------------------------------------------------------------+
+| 0x801a | FLASH_SCK    | W  | SPI flash SCK                                                                                                   |
++--------+--------------+----+-----------------------------------------------------------------------------------------------------------------+
+| 0x801c | FLASH_SSEL   | W  | SPI flash SSEL                                                                                                  |
++--------+--------------+----+-----------------------------------------------------------------------------------------------------------------+
+
+
+The ``ICAP_`` registers are a direct connection to the FPGA internal
+configuration port.  For details on the ICAP port, see
+http://www.xilinx.com/support/documentation/user_guides/ug332.pdf
+and sample microprogram
+`reload.fs </files/gameduino/synth/sketches/j1firmware/reload.fs>`_.
+
+The ``FREQ`` registers are for measuring constant frequency work, e.g.
+sound playback.  Load a frequency value, e.g. 44100, into FREQHZ
+and the 8-bit register FREQTICK increments at that precise frequency.
+
+The ``P2_`` registers control the direction and value of the P2 data line,
+when the IOMODE register is set to 0x4A (ascii 'J').
+The sample :ref:`interrupts` shows use of the YLINE and P2_V registers
+to generate interrupts on the Arduino.
+
+The ``RANDOM`` register provides a continously updating random number, derived
+from the hardware's white noise generator.
+
+The ``CLOCK`` register is a 16-bit counter that increments every cycle, at 50MHz.
+
+The ``FLASH_*`` registers are an interface to the onboard SPI flash.  
+`flashtest.fs </files/gameduino/synth/sketches/j1firmware/testflash.fs>`_.  
+
+.. note::
+
+  To prevent coprocessor programs from accidentally changing configuration flash, the
+  Gameduino must be in IOMODE 'J' in order for the coprocessor to access the SPI flash.
+
+Last modified $Date: 2011-05-27 22:57:12 -0700 (Fri, 27 May 2011) $

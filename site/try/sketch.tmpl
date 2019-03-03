@@ -1,0 +1,19 @@
+<script type="text/javascript">
+## function SelectAll(id) {
+##     document.getElementById(id).focus();
+##     document.getElementById(id).select();
+## }
+</script>
+<div class="ui-widget-content">
+You can <a href="${name}.zip">download</a> the sketch which loads this graphic, or copy the code from the tabs below.
+</div>
+<div id="tabs">
+  <ul>
+    <li><a href="#tabs-1">${name}.pde</a></li>
+    <li><a href="#tabs-2">${name}.h</a></li>
+  </ul>
+  <div id="tabs-1"><pre>$pde</pre></div>
+  <div id="tabs-2"><pre>$h</pre></div>
+  ## <div id="tabs-2"> <textarea style="background-color:#c0c0c0; font-family:courier; font-size:0.7em;" rows="40" cols="132" id="txtarea" onClick="SelectAll('txtarea');">$h</textarea> </div>
+</div>
+

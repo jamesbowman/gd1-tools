@@ -1,0 +1,22 @@
+#def title: Lossy background image upload
+#def business
+  <p>This utility encodes any image as a Gameduino character map.  It
+  selectively discards image detail until the image fits in Gameduino
+  character memory.
+
+  <h2>Upload an image file</h2>
+  <form action="upload" method="post" enctype="multipart/form-data">
+  <table>
+  <tr><td>file:</td><td><input type="file" name="myFile" required="required"/></td></tr>
+  <tr><td>name:</td><td><input type="text" name="name" value="image" /></td></tr>
+  </table>
+  <p><input type="submit" />
+  </form>
+  <p>Some example output:
+  <p>
+  <a href="/results/308f7f6d/"><img src="/static/images/james_bowman.png"></a>
+  <a href="/results/e4214529/"><img src="/static/images/doctor.png"></a>
+  <a href="/results/bf9464d6/"><img src="/static/images/lena.png"></a>
+  <a href="/results/add579fa/"><img src="/static/images/titanic.png"></a>
+#end def
+#include "common.tmpl"

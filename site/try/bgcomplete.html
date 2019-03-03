@@ -1,0 +1,16 @@
+#def title: Encode complete
+#def business
+  <div class="ui-widget ui-widget-content">
+    Image '$name' encoded in $nchars characters, using $nbytes bytes
+    <br>
+    <canvas id="can" width="$width" height="$height" > </canvas>
+    <canvas id="set" width="128" height="128" > </canvas>
+  </div>
+  <div id="info" class="ui-widget ui-widget-content">Roll over image for character info</div>
+
+
+  #include "sketch.tmpl"
+  <script>name="$name";width=$width;height=$height;tilecode=$tilecode;codetiles=$codetiles;</script>
+  <script>$pagecode</script>
+#end def
+#include "common.tmpl"

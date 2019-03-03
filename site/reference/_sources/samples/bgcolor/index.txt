@@ -1,0 +1,61 @@
+.. index::
+  pair: BG_COLOR; example
+
+.. _bgcolor:
+
+Background color register
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. image:: bgcolor-screenshot.png
+
+.. raw:: html
+
+  <object width="480" height="385"><param name="movie" value="http://www.youtube.com/v/Q1txxDEFPXk?fs=1&amp;hl=en_US"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/Q1txxDEFPXk?fs=1&amp;hl=en_US" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="480" height="385"></embed></object>
+
+Background character colors have a transparency bit.  When this bit is set,
+the hardware takes the color from the ``BG_COLOR`` register.
+
+This is useful for situations when a color is shared across the whole
+background and you want to update it at once - for a flash or fade, for example.
+
+But by using a small coprocessor program (:ref:`bgstripes`) to load the background color
+register with a new value for each raster line, you can use it like
+another graphic layer behind the character graphics.
+
+The microprogram reads a palette of 64 colors from memory, and draws
+them over 64 raster lines.  With a suitable desert-themed 64 color
+gradient (blue to white to sand) loaded, the result is:
+
+.. image:: desert.png
+
+The video above is this background gradient, plus:
+
+ * character graphics for the scrolling background image of blocks and columns
+ * 16-color sprites for the standing character and fruit
+
+The parallax scroll gives an impression of height:
+the gradient slowly moves down as the camera climbs up.  At the top of the level the background is mostly sky:
+
+.. image:: bgcolor-screenshot.png
+  :scale: 33
+.. image:: bgcolor-screenshot3.png
+  :scale: 33
+.. image:: bgcolor-screenshot5.png
+  :scale: 33
+
+.. literalinclude:: ../../../files/gameduino/synth/sketches/bg.pde
+  :language: c++
+
+.. image:: level32.png
+  :scale: 33
+  :align: right
+
+.. _bgstripes:
+
+bgstripes.fs
+""""""""""""
+
+.. literalinclude:: ../../../files/gameduino/synth/sketches/j1firmware/bgstripes.fs
+  :language: none
+
+Last modified $Date: 2011-05-13 11:32:42 -0700 (Fri, 13 May 2011) $

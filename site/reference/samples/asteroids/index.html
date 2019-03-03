@@ -1,0 +1,145 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>asteroids &mdash; gameduino</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="top" title="gameduino" href="../../index.html" />
+    <link rel="up" title="Demos" href="../demos.html" />
+    <link rel="next" title="selftest" href="../selftest/index.html" />
+    <link rel="prev" title="chessboard" href="../chessboard/index.html" /> 
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-19722717-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  </head>
+  <body>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="asteroids">
+<span id="index-0"></span><span id="id1"></span><h1>asteroids<a class="headerlink" href="#asteroids" title="Permalink to this headline">¶</a></h1>
+<img alt="../../_images/asteroids-animated.gif" src="../../_images/asteroids-animated.gif" />
+<object width="480" height="385"><param name="movie" value="http://www.youtube.com/v/voWWytKXF9g?fs=1&amp;hl=en_US"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/voWWytKXF9g?fs=1&amp;hl=en_US" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="480" height="385"></embed></object><p>A version of the classic scrolling shooting space game, running on an Arduino in 27 Kbytes.</p>
+<p>The controller is four <a class="reference external" href="http://www.sparkfun.com/products/9180">Sparkfun arcade buttons</a> connected as:</p>
+<blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="27%" />
+<col width="73%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>6</td>
+<td>Left</td>
+</tr>
+<tr><td>5</td>
+<td>Right</td>
+</tr>
+<tr><td>4</td>
+<td>Thrust</td>
+</tr>
+<tr><td>3</td>
+<td>Fire</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>The background graphics - stars and planets -
+use about 130 characters.  Foreground graphics use about 75% of sprite RAM,
+because of the large number of rotations.  The game uses a 16-frame rotation
+sequence: the first four frames are stored in sprite RAM:</p>
+<img alt="../files/gameduino/synth/sketches/graphics/asteroid/rock1r.png" src="../files/gameduino/synth/sketches/graphics/asteroid/rock1r.png" />
+<p>and the remaining frames are generated using the hardware&#8217;s sprite <a class="reference internal" href="../rotate/index.html#rotate"><em>rotate</em></a> bits.</p>
+<p>Asteroids uses hardware collision detection to track missile-rock
+collisions, and player-rock collisions.  To do this, it draws the
+sprites in the following order:</p>
+<blockquote>
+<ul class="simple">
+<li>player</li>
+<li>missiles</li>
+<li>rocks</li>
+<li>explosions</li>
+</ul>
+</blockquote>
+<p>After the sprites are drawn, the main loop waits for a frame then
+downloads the hardware&#8217;s <a class="reference internal" href="../collision/index.html#collision"><em>collision</em></a> table.  Any rock sprites
+that are touching player or missile sprites have their <tt class="docutils literal"><span class="pre">collide</span></tt>
+flag marked for the next cycle.  The game uses hardware&#8217;s JK
+collision mode (<a class="reference internal" href="../jkcollision/index.html#jkcollision"><em>jkcollision</em></a>) to prevent rock-rock collisions
+from masking player- and missile-rock collisions.</p>
+<p>A <a class="reference internal" href="../splitscreen/index.html#splitscreen"><em>split-screen scroll</em></a> keeps the top and bottom borders stationary while scrolling the central section around the map.</p>
+<p>The sprites are mostly taken from the <a class="reference external" href="http://www.flyingyogi.com/fun/spritelib.html">SpriteLib GPL</a>.
+All the graphics are compressed using the scheme described in
+<em class="xref std std-ref">compression</em>.  This reduces their size by about 40%.</p>
+<p>Last modified $Date: 2011-05-13 11:32:42 -0700 (Fri, 13 May 2011) $</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <p class="logo"><a href="/sphinx/gameduino/">
+    <img class="logo" src="../../_static/gdlogo.png" alt="Logo"/>
+  </a></p>
+  <p class="logo"><a href="/sphinx/index.html">
+    <img class="logo" src="../../_static/tinylogo.png" alt="Logo"/>
+  </a></p>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search termKLAKKKs or a module, class or function name.
+    </p>
+</div>
+<div style="padding-left:40px;" >
+
+</div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011 James Bowman.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
+    </div>
+  </body>
+</html>

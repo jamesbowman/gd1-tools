@@ -1,0 +1,21 @@
+.. _selftest:
+
+selftest
+^^^^^^^^
+
+.. image:: selftest-screenshot.png
+  :scale: 33
+
+Runs a series of diagnostic tests, and on successful completion displays the screen above.
+Included tests are:
+
+ * SPI traffic stress test
+ * Onboard 32K RAM test
+ * Hardware collision detection test
+
+selftest also displays color bars and a 128x128 256-color test image, drawn as sprites.
+
+.. literalinclude:: ../../../files/gameduino/synth/sketches/selftest.pde
+  :language: c++
+
+Last modified $Date: 2011-05-13 11:32:42 -0700 (Fri, 13 May 2011) $

@@ -1,0 +1,113 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>voice synthesis &mdash; gameduino</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="top" title="gameduino" href="../../index.html" />
+    <link rel="up" title="Music and sound" href="../music.html" />
+    <link rel="next" title="Sample playback" href="../cowbell/index.html" />
+    <link rel="prev" title="midi playback" href="../midi/index.html" /> 
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-19722717-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  </head>
+  <body>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <span class="target" id="synthesis"></span><div class="section" id="voice-synthesis">
+<span id="index-0"></span><h1>voice synthesis<a class="headerlink" href="#voice-synthesis" title="Permalink to this headline">¶</a></h1>
+<p>Gameduino&#8217;s sound uses a 64-voice synthesizer.  Each voice can
+generate a simple sine wave at any frequency up to 8KHz.  Used
+separately, that&#8217;s 64 simple sine-wave instruments.  But by combining
+them you can create more complex sounds.  By using all 64, you can
+create a surprisingly rich sound.</p>
+<p>One easy way of capturing sounds is to use Audacity&#8217;s <tt class="docutils literal"><span class="pre">Frequency</span> <span class="pre">Analysis</span></tt>
+function, saving the sound&#8217;s spectrum as a file using <tt class="docutils literal"><span class="pre">Export</span></tt>:</p>
+<a class="reference internal image-reference" href="../../_images/audacity.png"><img alt="../../_images/audacity.png" src="../../_images/audacity.png" style="width: 520.0px; height: 399.0px;" /></a>
+<p>There is a function in the toolkit <tt class="xref py py-func docutils literal"><span class="pre">gameduino.prep.spectrum()</span></tt> that loads Audacity
+spectrum files, and returns a list of 64 voice settings.  Loading these settings - frequency
+and amplitude for all 64 voices - into the synthesizer bank is all it takes to
+play the sound.</p>
+<p>Here is a complex chord, recreated using the Gameduino:</p>
+<p><a class="reference download internal" href="../../_downloads/coldstart.wav"><tt class="xref download docutils literal"><span class="pre">coldstart.wav</span></tt></a></p>
+<p>Inserting a short delay between the loading
+of each voice creates
+the slow buildup.</p>
+<p>Another series of sounds, these ones taken from an 80s synth-pop hit:</p>
+<p><a class="reference download internal" href="../../_downloads/synth.wav"><tt class="xref download docutils literal"><span class="pre">synth.wav</span></tt></a></p>
+<p>Name that tune...</p>
+<p>Last modified $Date: 2011-05-13 11:32:42 -0700 (Fri, 13 May 2011) $</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <p class="logo"><a href="/sphinx/gameduino/">
+    <img class="logo" src="../../_static/gdlogo.png" alt="Logo"/>
+  </a></p>
+  <p class="logo"><a href="/sphinx/index.html">
+    <img class="logo" src="../../_static/tinylogo.png" alt="Logo"/>
+  </a></p>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search termKLAKKKs or a module, class or function name.
+    </p>
+</div>
+<div style="padding-left:40px;" >
+
+</div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011 James Bowman.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
+    </div>
+  </body>
+</html>

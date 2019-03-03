@@ -1,0 +1,104 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>midi playback &mdash; gameduino</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="top" title="gameduino" href="../../index.html" />
+    <link rel="up" title="Music and sound" href="../music.html" />
+    <link rel="next" title="voice synthesis" href="../synthesis/index.html" />
+    <link rel="prev" title="toccata" href="../toccata/index.html" /> 
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-19722717-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  </head>
+  <body>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="midi-playback">
+<span id="midi"></span><span id="index-0"></span><h1>midi playback<a class="headerlink" href="#midi-playback" title="Permalink to this headline">¶</a></h1>
+<img alt="../../_images/midi-screenshot.png" src="../../_images/midi-screenshot.png" />
+<object width="480" height="385"><param name="movie" value="http://www.youtube.com/v/JMEIJHGvi7w?fs=1&amp;hl=en_US"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/JMEIJHGvi7w?fs=1&amp;hl=en_US" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="480" height="385"></embed></object><p>Given a short MIDI file,
+<a class="reference external" href="/files/gameduino/synth/sketches/proto/mont.py">this</a>
+command-line MIDI conversion utility writes the same music
+as a simple bytecode.</p>
+<p>The Arduino <tt class="docutils literal"><span class="pre">player</span></tt> sketch uses this simple bytecode to control music playback.
+As the player updates the synthesizer&#8217;s 64 voices,
+it also updates the colored circles.
+Each one represents a voice, and
+the size of each circle shows the voice&#8217;s amplitude.</p>
+<p>The converted MIDI file is &#8220;MONT&#8221; by Morusque.  The music data takes about 9K of flash on the Arduino.</p>
+<div xmlns:cc="http://creativecommons.org/ns#" about="urn:sha1:22UUMI54RKPKT363K47TDJKGQI3EPEQI"><a rel="cc:attributionURL" property="cc:attributionName" href="http://ccmixter.org/files/Nurykabe/10176"> Morusque</a> / <a rel="license" href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a></div><p>Last modified $Date: 2011-05-13 11:32:42 -0700 (Fri, 13 May 2011) $</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <p class="logo"><a href="/sphinx/gameduino/">
+    <img class="logo" src="../../_static/gdlogo.png" alt="Logo"/>
+  </a></p>
+  <p class="logo"><a href="/sphinx/index.html">
+    <img class="logo" src="../../_static/tinylogo.png" alt="Logo"/>
+  </a></p>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search termKLAKKKs or a module, class or function name.
+    </p>
+</div>
+<div style="padding-left:40px;" >
+
+</div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011 James Bowman.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
+    </div>
+  </body>
+</html>

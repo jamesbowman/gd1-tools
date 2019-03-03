@@ -1,0 +1,145 @@
+.. _assetlibrary: 
+
+Asset Library
+-------------
+
+The Gameduino has a small onboard flash memory.
+In addition to the FPGA boot image, this memory holds a small asset libary
+that holds some media useful for games and other applications.
+
+Reading flash
+^^^^^^^^^^^^^
+
+Gameduino's flash is SPI-based, so you can do a series of SPI commands to read it.
+
+Firstly, enable the Flash SPI interface on pin 2::
+
+  pinMode(2, OUTPUT);
+  digitalWrite(2, HIGH);
+  GD.wr(IOMODE, 'F');
+
+Now pin 2 enables the flash SPI interface, and you can (e.g.) read and print out the flash status::
+
+  digitalWrite(2, LOW);
+  SPI.transfer(0xd7);   // read SPI flash status
+  byte status = spix(0);
+  digitalWrite(2, HIGH);
+  Serial.println(status, HEX);
+
+The flash is an Atmel `AT45DB021D <http://www.atmel.com/dyn/resources/prod_documents/doc3638.pdf>`_.
+Its addressing is a little odd.  The flash has pages of memory,
+each page is 264 bytes.  Addresses are formed from the page number
+and the page offset like this::
+
+  page * 512 + offset
+
+where the page range is 0-1023 and the offset range is 0-263.
+
+To read bytes from flash into Arduino memory, you can use a simple function like this one::
+
+  static uint32_t flash_readn(byte *dst, uint32_t src, size_t n)
+  { 
+    digitalWrite(2, LOW);
+    SPI.transfer(0x03);   // array read command
+    SPI.transfer((byte)(src >> 16));
+    SPI.transfer((byte)(src >> 8));
+    SPI.transfer((byte)(src >> 0));
+    while (n--) {
+      *dst++ = SPI.transfer(0);
+      src++;
+      if ((511 & (uint16_t)src) == 264)
+        src = src - 264 + 512;
+    }
+    digitalWrite(2, HIGH);
+    return src;
+  }
+
+Note that this function takes care of the fiddly page pointer math, returning the address of the advanced pointer.
+
+Reading the asset library
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The asset library root directory is fixed at page 640, so is at flash address (512 * 640).  Directory entries are a 12-byte string name, with a byte length and flash address::
+
+  struct dirent {
+    char name[12];
+    uint16_t length;
+    uint32_t addr;
+  };
+
+the end of directory is marked by an entry with a 0-length string.  
+To search a directory for a specific name::
+
+  static byte find_name(uint32_t &ptr, uint16_t &len, uint32_t dirptr, char *name)
+  {
+    while (true) {
+      dirptr = flash_readn((byte*)&de, dirptr, sizeof(de));
+      if (de.name[0] == 0)
+        return 0;   // end of dir, no match found
+      if (strcmp(de.name, name) == 0) {
+        len = de.length;
+        ptr = de.addr;
+        return 1;
+      }
+    }
+  }
+
+So to find the asset in directory "voice" called "ohdear"::
+
+  uint32_t root_ptr = 640 * 512L;
+  uint32_t voice_ptr;
+  uint16_t voice_len;
+  find_name(voice_ptr, voice_len, root_ptr, "voice");
+  uint32_t ohdear_ptr;
+  uint16_t ohdear_len;
+  find_name(ohdear_ptr, ohdear_len, voice_ptr, "ohdear");
+
+Contents
+^^^^^^^^
+
+::
+
+   pickups
+     pal
+     img
+   voice
+     ar
+     duino
+     game
+     go
+     nice
+     ohdear
+     over
+     ready
+   fonts
+     font8x8
+     font16
+   drumkit
+     bassdrum2
+     bassdrum4
+     clap
+     conga2
+     conga3
+     cowbell1
+     cymbal1
+     cymbal3
+     hihat1
+     hihat2
+     snaredrum2
+     snaredrum3
+
+The directory ``pickups`` contains the sprite palette (``pal``)
+and images (``img``) used in the :ref:`sprites256` sample.  Thanks
+to `SpriteLib GPL <http://www.flyingyogi.com/fun/spritelib.html>`_.
+
+The directory ``drumkit`` contains various 8-bit samples of a drum kit. Thanks to http://www.drumsamples.org/ and Colin Dooley.
+
+The directory ``voice`` contains various 8-bit voice samples, spoken
+by some guy.
+
+The directory ``fonts`` contains two fonts.  ``font8x8`` is for use in character maps, and ``font16`` is a 16x16 4-color font for loading into sprites.
+
+Example code
+^^^^^^^^^^^^
+
+The example "sample" in the audio section reads the asset library sound samples using the functions above, and plays back samples.  It is controlled by joystick.

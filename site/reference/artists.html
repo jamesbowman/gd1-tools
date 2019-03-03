@@ -1,0 +1,169 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Gameduino for Artists &mdash; gameduino</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="top" title="gameduino" href="index.html" />
+    <link rel="next" title="The Gameduino Python package" href="python.html" />
+    <link rel="prev" title="screenshot" href="samples/screenshot/index.html" /> 
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-19722717-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  </head>
+  <body>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="gameduino-for-artists">
+<h1>Gameduino for Artists<a class="headerlink" href="#gameduino-for-artists" title="Permalink to this headline">¶</a></h1>
+<p>Like every other 8-bit game system, Gameduino has some restrictions
+on the graphics it can display.  This page summarizes them
+for graphic artists and animators.</p>
+<div class="section" id="screen-and-colors">
+<h2>Screen and colors<a class="headerlink" href="#screen-and-colors" title="Permalink to this headline">¶</a></h2>
+<p>Gameduino&#8217;s screen resolution is 400x300 pixels.  Pixels are square.
+The screen refreshes at 72Hz, so natural rates for smooth animation
+are 72, 36, 24, 18 or 12 fps.  Colors are 5 bits per channel, so
+these are the hex RGB values of the available colors:</p>
+<div class="highlight-python"><pre>00 *
+08
+10
+18
+20 *
+28
+30
+38
+40 *
+48
+50
+58
+60 *
+68
+70
+78
+80 *
+88
+90
+98
+a0 *
+a8
+b0
+b8
+c0 *
+c8
+d0
+d8
+e0 *
+e8
+f0
+f8</pre>
+</div>
+<p>The display output is only 3-bit (the hardware uses a 2x2 dither for the intermediate colors), so
+only the values marked with an asterisk are pure, undithered colors.  Check out the color ramps
+and photograph in this image for an idea of what the dithering looks like:</p>
+<a class="reference internal image-reference" href="_images/selftest-screenshot.png"><img alt="_images/selftest-screenshot.png" src="_images/selftest-screenshot.png" style="width: 264.0px; height: 198.0px;" /></a>
+</div>
+<div class="section" id="background-graphics">
+<h2>Background graphics<a class="headerlink" href="#background-graphics" title="Permalink to this headline">¶</a></h2>
+<p>Background graphics are character based.  The hardware supports 256
+characters on screen at any time.  Each character is 8x8 pixels,
+and each character can use up to four different colors.  To be clear: there are 256 characters available, and each has its own
+4-entry palette.
+The screen resolution is 400x300 pixels,
+or 50x37.5 characters.</p>
+<p>This is the entire background set for the <a class="reference internal" href="samples/scroll/index.html#scroll"><em>scroll</em></a> demo.  The scroll program
+creates each of the background elements by
+copying rectangular pieces of this source image to the screen.</p>
+<img alt="_images/platformer.png" src="_images/platformer.png" />
+</div>
+<div class="section" id="foreground-graphics">
+<h2>Foreground graphics<a class="headerlink" href="#foreground-graphics" title="Permalink to this headline">¶</a></h2>
+<p>The foreground (sprite) system has a few modes.  Individual sprites are
+16x16 pixels.  Larger sprites are made by combining these 16x16 sprites.</p>
+<p>Sprite images are paletted: there are three palette modes: 256
+color, 16 color and 4 color.  Transparent pixels count as one color
+in the palette, so a sprite with transparency can use 255, 15 or 3
+non-transparent colors.</p>
+<p>The storage required for sprite images depends on the number of colors used.  The hardware
+has room for 64 256-color sprites, 128 16-color sprites, or 256-4 color sprites, or any combination
+of these.</p>
+<p>The palettes available depend on the color mode.  There are four
+256-color palettes, and two each of the 16 and 4 color palettes.
+A paricular on-screen sprite can use any image, and any palette.</p>
+<p>To save on sprite images, the hardware supports an 8-way flip/rotate
+of the sprite image (see <a class="reference internal" href="samples/rotate/index.html#rotate"><em>rotate</em></a> for an example).</p>
+<p>Last modified $Date: 2011-05-13 11:32:42 -0700 (Fri, 13 May 2011) $</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <p class="logo"><a href="/sphinx/gameduino/">
+    <img class="logo" src="_static/gdlogo.png" alt="Logo"/>
+  </a></p>
+  <p class="logo"><a href="/sphinx/index.html">
+    <img class="logo" src="_static/tinylogo.png" alt="Logo"/>
+  </a></p>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search termKLAKKKs or a module, class or function name.
+    </p>
+</div>
+<div style="padding-left:40px;" >
+
+</div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011 James Bowman.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
+    </div>
+  </body>
+</html>

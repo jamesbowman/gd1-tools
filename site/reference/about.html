@@ -1,0 +1,240 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Gameduino: a game adapter for the Arduino &mdash; gameduino</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="#" />
+    <link rel="top" title="gameduino" href="index.html" /> 
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-19722717-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  </head>
+  <body>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="gameduino-a-game-adapter-for-the-arduino">
+<span id="about"></span><h1>Gameduino: a game adapter for the Arduino<a class="headerlink" href="#gameduino-a-game-adapter-for-the-arduino" title="Permalink to this headline">¶</a></h1>
+<p>Tiny microcontrollers like the Atmel AVR used in the Arduino are
+now much more powerful than the 8-bit computers from the 1980s.  So
+why not use them to play video games?</p>
+<img align="right" alt="_images/DSC_2231_sm.jpg" class="align-right" src="_images/DSC_2231_sm.jpg" />
+<p>Gameduino is a game adapter for Arduino - or anything else with an SPI
+interface - built as a single shield that stacks up on top of the
+Arduino and has plugs for a VGA monitor and stereo speakers.</p>
+<p>The sound and graphics are definitely old-school, but
+thanks to the latest FPGA technology,
+the sprite capabilities are a step above those of
+<a class="reference external" href="http://en.wikipedia.org/wiki/Sprite_(computer_graphics)#Hardware_sprites">past machines</a>.</p>
+<ul class="simple">
+<li>video output is 400x300 pixels in 512 colors</li>
+</ul>
+<blockquote>
+<ul class="simple">
+<li>all color processed internally at 15-bit precision</li>
+<li>compatible with any standard VGA monitor (800x600 &#64; 72Hz)</li>
+<li>background graphics<ul>
+<li>512x512 pixel character background</li>
+<li>256 characters, each with independent 4 color palette</li>
+<li>pixel-smooth X-Y wraparound scroll</li>
+</ul>
+</li>
+<li>foreground graphics<ul>
+<li>each sprite is 16x16 pixels with per-pixel transparency</li>
+<li>each sprite can use 256, 16 or 4 colors</li>
+<li>four-way rotate and flip</li>
+<li>96 sprites per scan-line, 1536 texels per line</li>
+<li>pixel-perfect sprite collision detection</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<ul class="simple">
+<li>audio output is a stereo 12-bit frequency synthesizer</li>
+</ul>
+<blockquote>
+<ul class="simple">
+<li>64 independent voices 10-8000 Hz</li>
+<li>per-voice sine wave or white noise</li>
+<li>sample playback channel</li>
+</ul>
+</blockquote>
+<p>The Gameduino is controlled via SPI read/write operations, and looks
+to the CPU like a 32Kbyte RAM.
+(Unlike many 8-bit machines, there are no restrictions on when you can access this RAM).
+There is a handy <a class="reference download internal" href="_downloads/poster.pdf"><tt class="xref download docutils literal"><span class="pre">reference</span> <span class="pre">poster</span></tt></a> showing
+how the whole system works, and a set of
+<a class="reference internal" href="samples/index.html#samples"><em>sample programs</em></a> and
+the <a class="reference internal" href="GD/index.html#gd"><em>GD library</em></a>.</p>
+<a class="reference external image-reference" href="_downloads/poster.pdf"><img align="right" alt="_images/poster.jpg" class="align-right" src="_images/poster.jpg" /></a>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware Technical Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="hardware.html#physical-connections">Physical connections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hardware.html#low-level-spi-interface">Low-level SPI interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hardware.html#background-graphics">Background graphics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hardware.html#sprite-graphics">Sprite graphics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hardware.html#sound">Sound</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hardware.html#registers">Registers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hardware.html#coprocessor">Coprocessor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hardware.html#colors">Colors</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="coprocessor.html">Coprocessor</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="coprocessor.html#hello-world-compiling-and-loading">Hello World: compiling and loading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="coprocessor.html#execution">Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="coprocessor.html#memory">Memory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="coprocessor.html#stacks">Stacks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="coprocessor.html#word-reference">Word reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="coprocessor.html#saving-space">Saving space</a></li>
+<li class="toctree-l2"><a class="reference internal" href="coprocessor.html#examples">Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="coprocessor.html#coprocessor-only-registers">Coprocessor-only registers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="GD/index.html">The GD library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="samples/index.html">Sample sketches</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="samples/basic.html">Basic examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="samples/sprites256/index.html">sprites256</a></li>
+<li class="toctree-l3"><a class="reference internal" href="samples/palettes/index.html">palettes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="samples/rotate/index.html">rotate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="samples/collision/index.html">collision</a></li>
+<li class="toctree-l3"><a class="reference internal" href="samples/scroll/index.html">scroll</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="samples/music.html">Music and sound</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="samples/toccata/index.html">toccata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="samples/midi/index.html">midi playback</a></li>
+<li class="toctree-l3"><a class="reference internal" href="samples/synthesis/index.html">voice synthesis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="samples/cowbell/index.html">Sample playback</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="samples/advanced.html">Advanced techniques</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="samples/interrupts/index.html">interrupts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="samples/splitscreen/index.html">split-screen scroll</a></li>
+<li class="toctree-l3"><a class="reference internal" href="samples/jkcollision/index.html">jkcollision</a></li>
+<li class="toctree-l3"><a class="reference internal" href="samples/bitmap/index.html">bitmap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="samples/wireframe/index.html">wireframe</a></li>
+<li class="toctree-l3"><a class="reference internal" href="samples/snow/index.html">snow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="samples/bgcolor/index.html">Background color register</a></li>
+<li class="toctree-l3"><a class="reference internal" href="samples/assetlibrary/index.html">Asset Library</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="samples/demos.html">Demos</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="samples/ball/index.html">ball</a></li>
+<li class="toctree-l3"><a class="reference internal" href="samples/chessboard/index.html">chessboard</a></li>
+<li class="toctree-l3"><a class="reference internal" href="samples/asteroids/index.html">asteroids</a></li>
+<li class="toctree-l3"><a class="reference internal" href="samples/selftest/index.html">selftest</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="samples/developing.html">Developing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="samples/screenshot/index.html">screenshot</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="artists.html">Gameduino for Artists</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="artists.html#screen-and-colors">Screen and colors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="artists.html#background-graphics">Background graphics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="artists.html#foreground-graphics">Foreground graphics</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="python.html">The Gameduino Python package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cookbook.html">Cookbook</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cookbook.html#use-progmem-for-graphics-data">Use PROGMEM for graphics data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cookbook.html#fade-to-black">Fade to black</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cookbook.html#smooth-sprite-animation">Smooth sprite animation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cookbook.html#square-and-sawtooth-waves">Square and sawtooth waves</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="resources.html">Resources for creating media</a></li>
+<li class="toctree-l1"><a class="reference internal" href="making.html">Making a Gameduino</a></li>
+</ul>
+</div>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
+</ul>
+<p>Gameduino is open-source hardware (BSD license) and all its code is GPL licensed.</p>
+<p>Logo design by <a class="reference external" href="http://ilkke.blogspot.com">iLKke</a>.</p>
+<a class="reference external image-reference" href="samples/collision/index.html"><img alt="_images/collision-screenshot.jpg" src="_images/collision-screenshot.jpg" /></a>
+<a class="reference external image-reference" href="samples/sprites256/index.html"><img alt="_images/sprites256-screenshot.jpg" src="_images/sprites256-screenshot.jpg" /></a>
+<a class="reference external image-reference" href="samples/scroll/index.html"><img alt="_images/scroll-screenshot.jpg" src="_images/scroll-screenshot.jpg" /></a>
+<a class="reference external image-reference" href="samples/asteroids/index.html"><img alt="_images/asteroids-screenshot.jpg" src="_images/asteroids-screenshot.jpg" /></a>
+<a class="reference external image-reference" href="samples/wireframe/index.html"><img alt="_images/wireframe-screenshot.jpg" src="_images/wireframe-screenshot.jpg" /></a>
+<a class="reference external image-reference" href="samples/selftest/index.html"><img alt="_images/selftest-screenshot.jpg" src="_images/selftest-screenshot.jpg" /></a>
+<a class="reference external image-reference" href="samples/splitscreen/index.html"><img alt="_images/splitscreen-screenshot.jpg" src="_images/splitscreen-screenshot.jpg" /></a>
+<a class="reference external image-reference" href="samples/bitmap/index.html"><img alt="_images/bitmap-screenshot.jpg" src="_images/bitmap-screenshot.jpg" /></a>
+<a class="reference external image-reference" href="samples/bgcolor/index.html"><img alt="_images/bgcolor-screenshot.jpg" src="_images/bgcolor-screenshot.jpg" /></a>
+<p>Last modified $Date: 2011-05-19 14:47:05 -0700 (Thu, 19 May 2011) $</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <p class="logo"><a href="/sphinx/gameduino/">
+    <img class="logo" src="_static/gdlogo.png" alt="Logo"/>
+  </a></p>
+  <p class="logo"><a href="/sphinx/index.html">
+    <img class="logo" src="_static/tinylogo.png" alt="Logo"/>
+  </a></p>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search termKLAKKKs or a module, class or function name.
+    </p>
+</div>
+<div style="padding-left:40px;" >
+
+</div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011 James Bowman.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
+    </div>
+  </body>
+</html>

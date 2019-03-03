@@ -1,0 +1,418 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Coprocessor &mdash; gameduino</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="top" title="gameduino" href="index.html" />
+    <link rel="next" title="The GD library" href="GD/index.html" />
+    <link rel="prev" title="Hardware Technical Reference" href="hardware.html" /> 
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-19722717-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  </head>
+  <body>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="coprocessor">
+<span id="id1"></span><h1><a class="toc-backref" href="#id17">Coprocessor</a><a class="headerlink" href="#coprocessor" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#coprocessor" id="id17">Coprocessor</a><ul>
+<li><a class="reference internal" href="#hello-world-compiling-and-loading" id="id18">Hello World: compiling and loading</a></li>
+<li><a class="reference internal" href="#execution" id="id19">Execution</a></li>
+<li><a class="reference internal" href="#memory" id="id20">Memory</a></li>
+<li><a class="reference internal" href="#stacks" id="id21">Stacks</a></li>
+<li><a class="reference internal" href="#word-reference" id="id22">Word reference</a></li>
+<li><a class="reference internal" href="#saving-space" id="id23">Saving space</a></li>
+<li><a class="reference internal" href="#examples" id="id24">Examples</a></li>
+<li><a class="reference internal" href="#coprocessor-only-registers" id="id25">Coprocessor-only registers</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>The coprocessor is a small 16-bit CPU that has direct access to all
+of the Gameduino memory and registers.  It executes code from the
+256 bytes at 2b00-2bff, enough for 128 16-bit instructions.</p>
+<p>The coprocessor is completely free for your application to use: in
+normal operation of the Gameduino, it is idle.  Some possible uses of the
+coprocessor:</p>
+<blockquote>
+<ul class="simple">
+<li>fast copies and clears (&#8220;blits&#8221;) of video memory</li>
+<li>line, circle and triangle drawing using a <a class="reference internal" href="samples/bitmap/index.html#bitmap"><em>bitmap</em></a>, see <a class="reference internal" href="samples/wireframe/index.html#wireframe"><em>wireframe</em></a></li>
+<li>split-screen effects by changing registers mid-frame, see <a class="reference internal" href="samples/splitscreen/index.html#splitscreen"><em>split-screen scroll</em></a> and <a class="reference internal" href="samples/bgcolor/index.html#bgcolor"><em>Background color register</em></a></li>
+</ul>
+</blockquote>
+<p>The coprocessor&#8217;s CPU is a modified version of the <a class="reference external" href="http://www.excamera.com/sphinx/fpga-j1.html">J1 CPU</a>.  It executes
+instructions from its instruction RAM, and can perform read/writes
+to any location in the 32K Gameduino address space, including its
+own instruction RAM.</p>
+<p>Some highlights of the coprocessor</p>
+<blockquote>
+<ul class="simple">
+<li>50 MIPS</li>
+<li>16-bit internal bus</li>
+<li>8-bit memory interface, can read/write all memory locations</li>
+<li>Single-cycle 16x16 bit multiply, plus barrel shifter</li>
+<li>Fast, efficient stack machine</li>
+</ul>
+</blockquote>
+<p>For more details of the coprocessor, see <a class="reference external" href="http://www.excamera.com/sphinx/fpga-j1.html">The J1 Forth CPU</a> and
+the directory <tt class="docutils literal"><span class="pre">j1firmware</span></tt> in the sample sketches.</p>
+<div class="section" id="hello-world-compiling-and-loading">
+<span id="index-0"></span><h2><a class="toc-backref" href="#id18">Hello World: compiling and loading</a><a class="headerlink" href="#hello-world-compiling-and-loading" title="Permalink to this headline">¶</a></h2>
+<p>As a simple example, this microprogram writes &#8216;HELLO WORLD&#8217; to address 512 (screen line 8) character RAM:</p>
+<p>Microprograms begin with the <tt class="docutils literal"><span class="pre">start-microprogram</span></tt> word, and end with <tt class="docutils literal"><span class="pre">end-microprogram</span></tt>.  The
+assembly language is Forth-like, with word definitions preceded by <tt class="docutils literal"><span class="pre">:</span></tt> and ended with <tt class="docutils literal"><span class="pre">;</span></tt>.
+The entry point is the <tt class="docutils literal"><span class="pre">main</span></tt> word, which should not return - here it loops indefinitely with the
+words <tt class="docutils literal"><span class="pre">begin</span> <span class="pre">again</span></tt>.</p>
+<p>To compile it, download and unpack the
+<a class="reference external" href="/files/gameduino/synth/sketches/j1firmware.zip">coprocessor SDK</a>,
+and run the assembler:</p>
+<div class="highlight-python"><pre>$ gforth -e 'include main.fs bye'</pre>
+</div>
+<p>This runs the assembler on all the microprograms listed in <tt class="docutils literal"><span class="pre">main.fs</span></tt>.  The source program <tt class="docutils literal"><span class="pre">helloworld.fs</span></tt>
+is assembled to four object files:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="75%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>helloworld.lst</td>
+<td>Listing file, for your reading pleasure</td>
+</tr>
+<tr><td>helloworld.binle</td>
+<td>Binary file, little-endian</td>
+</tr>
+<tr><td>helloworld.binbe</td>
+<td>Binary file, big-endian</td>
+</tr>
+<tr><td>helloworld.h</td>
+<td>Header file, for use with <a class="reference internal" href="GD/index.html#GD::microcode__prog_ucharP.i" title="GD::microcode"><tt class="xref cpp cpp-func docutils literal"><span class="pre">GD::microcode()</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+<p>The <tt class="docutils literal"><span class="pre">.h</span></tt> format is easiest to use in a sketch:</p>
+<p>results in:</p>
+<img alt="_images/helloworld.png" src="_images/helloworld.png" />
+</div>
+<div class="section" id="execution">
+<h2><a class="toc-backref" href="#id19">Execution</a><a class="headerlink" href="#execution" title="Permalink to this headline">¶</a></h2>
+<p>When the control register <tt class="docutils literal"><span class="pre">J1_RESET</span></tt> is set to 1, the coprocessor is halted.
+When set to 0, the coprocessor starts execution with the instruction
+at address 2b00.  The microprogram should not return: it should instead loop
+indefinitely.</p>
+<p>For the Arduino, the procedure for loading a microprogram is:</p>
+<blockquote>
+<ul class="simple">
+<li>write 1 to <tt class="docutils literal"><span class="pre">J1_RESET</span></tt> to halt the coprocessor</li>
+<li>write the program bytes to 2b00-2bff</li>
+<li>write 0 to <tt class="docutils literal"><span class="pre">J1_RESET</span></tt> to start execution at 2b00</li>
+</ul>
+</blockquote>
+<p>This is done in the GD library by <a class="reference internal" href="GD/index.html#GD::microcode__prog_ucharP.i" title="GD::microcode"><tt class="xref cpp cpp-func docutils literal"><span class="pre">GD::microcode()</span></tt></a>.</p>
+</div>
+<div class="section" id="memory">
+<span id="index-1"></span><h2><a class="toc-backref" href="#id20">Memory</a><a class="headerlink" href="#memory" title="Permalink to this headline">¶</a></h2>
+<p>The coprocessor is a 16-bit CPU, and the Gameduino&#8217;s RAM is byte-wide.
+So the coprocessor must access the memory as bytes.  This means
+that read instructions fill the upper 8 bit of the value with zeroes,
+and that write instructions ignore the upper 8 bits of the value.</p>
+<p>The memory access instructions
+<a class="reference external" href="http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.0870">c&#64;</a>
+and
+<a class="reference external" href="http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.0850">c!</a>
+each execute in two cycles.</p>
+<p>To ease working with these byte quantities, there is a <tt class="docutils literal"><span class="pre">swab</span></tt>
+micro-instruction which swaps the low and high bytes of a 16-bit
+word.  Using this word to implement the 16-bit access words
+<a class="reference external" href="http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.0650">&#64;</a>
+and
+<a class="reference external" href="http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.0010">!</a>
+gives:</p>
+<div class="highlight-python"><pre>: 1+    d# 1 + ;
+: @     dup c@ swap 1+ c@ swab or ;
+: !     over swab over 1+ c! c! ;</pre>
+</div>
+<p>An 48-byte area of memory (<tt class="docutils literal"><span class="pre">COMM</span></tt>) is set aside for Arduino-coprocessor
+communication.  Any area of memory can be used for communication,
+but <tt class="docutils literal"><span class="pre">COMM</span></tt> is useful because it is not used for anything else.</p>
+</div>
+<div class="section" id="stacks">
+<span id="index-2"></span><h2><a class="toc-backref" href="#id21">Stacks</a><a class="headerlink" href="#stacks" title="Permalink to this headline">¶</a></h2>
+<p>There are two stacks: the data stack for general use, and the return stack for
+subroutine return addresses.  The data stack is 33 cells deep.
+The return stack is 32 cells deep.
+Both stacks wrap on overflow.</p>
+<p>The return stack is accessible by the standard Forth words
+<a class="reference external" href="http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.0580">&gt;r</a>
+<a class="reference external" href="http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.2060">r&gt;</a>
+and
+<a class="reference external" href="http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.2070">r&#64;</a>.</p>
+</div>
+<div class="section" id="word-reference">
+<h2><a class="toc-backref" href="#id22">Word reference</a><a class="headerlink" href="#word-reference" title="Permalink to this headline">¶</a></h2>
+<p><strong>Directives</strong></p>
+<p><tt class="docutils literal"><span class="pre">start-microprogram</span> <span class="pre">N</span></tt> Begin assembling microprogram named N.</p>
+<p><tt class="docutils literal"><span class="pre">end-microprogram</span></tt> Mark end of microprogram</p>
+<p><strong>Literals</strong></p>
+<p>The assembler allows decimal literals by prefixing the number with
+<tt class="docutils literal"><span class="pre">d#</span></tt>.  Hexadecimal literals are preceded by <tt class="docutils literal"><span class="pre">h#</span></tt>.  Both have
+the effect of pushing the literal value on the stack.  The standard Forth
+word <tt class="docutils literal"><span class="pre">[CHAR]</span></tt> is also supported.</p>
+<p><strong>Defining words</strong></p>
+<p>The assembler uses the standard Forth defining words:</p>
+<p><tt class="docutils literal"><span class="pre">:</span></tt> starts the definition of a new word and <tt class="docutils literal"><span class="pre">;</span></tt> ends it</p>
+<p><tt class="docutils literal"><span class="pre">constant</span></tt> defines a constant</p>
+<p><strong>Operations</strong></p>
+<p>The following standard Forth words are single instructions:</p>
+<p><a class="reference external" href="http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.0120">+</a>
+<a class="reference external" href="http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.0300">1-</a>
+<a class="reference external" href="http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.0530">=</a>
+<a class="reference external" href="http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.0480">&lt;</a>
+<a class="reference external" href="http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.2340">u&lt;</a>
+<a class="reference external" href="http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.2490">xor</a>
+<a class="reference external" href="http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.0720">and</a>
+<a class="reference external" href="http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.1980">or</a>
+<a class="reference external" href="http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.1720">invert</a>
+<a class="reference external" href="http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.2260">swap</a>
+<a class="reference external" href="http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.1290">dup</a>
+<a class="reference external" href="http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.1260">drop</a>
+<a class="reference external" href="http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.1990">over</a>
+<a class="reference external" href="http://forth.sourceforge.net/std/dpans/dpans6.htm#6.2.1930">nip</a>
+<a class="reference external" href="http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.0580">&gt;r</a>
+<a class="reference external" href="http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.2060">r&gt;</a>
+<a class="reference external" href="http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.2070">r&#64;</a>
+<a class="reference external" href="http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.0870">c&#64;</a>
+<a class="reference external" href="http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.0850">c!</a>
+<a class="reference external" href="http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.2162">rshift</a>
+<a class="reference external" href="http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.0090">*</a></p>
+<p>These single instructions are not part of ANS Forth:</p>
+<p><tt class="docutils literal"><span class="pre">swab</span></tt> exchange the upper and lower bytes of the item on top of stack</p>
+<p><tt class="docutils literal"><span class="pre">2dup=</span></tt> equivalent to <tt class="docutils literal"><span class="pre">2DUP</span> <span class="pre">=</span></tt></p>
+<p><tt class="docutils literal"><span class="pre">2dupxor</span></tt> equivalent to <tt class="docutils literal"><span class="pre">2DUP</span> <span class="pre">XOR</span></tt></p>
+<p>There are several other merged operations; see the included file in basewords.fs for a complete list.</p>
+<p><strong>Control flow</strong></p>
+<p><tt class="docutils literal"><span class="pre">if</span> <span class="pre">else</span> <span class="pre">then</span></tt> as in Forth, see <a class="reference external" href="http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.1700">IF</a></p>
+<p><tt class="docutils literal"><span class="pre">begin</span> <span class="pre">until</span></tt> as in Forth, see <a class="reference external" href="http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.2390">UNTIL</a></p>
+<p><tt class="docutils literal"><span class="pre">begin</span> <span class="pre">again</span></tt> as in Forth, see <a class="reference external" href="http://forth.sourceforge.net/std/dpans/dpans6.htm#6.2.0700">AGAIN</a></p>
+<p><tt class="docutils literal"><span class="pre">begin</span> <span class="pre">while</span> <span class="pre">repeat</span></tt> as in Forth, see <a class="reference external" href="http://forth.sourceforge.net/std/dpans/dpans6.htm#6.1.2430">WHILE</a></p>
+</div>
+<div class="section" id="saving-space">
+<h2><a class="toc-backref" href="#id23">Saving space</a><a class="headerlink" href="#saving-space" title="Permalink to this headline">¶</a></h2>
+<p>The coprocessor has a <em>tiny</em> code space, but with careful coding
+quite complex algorithms can be made to fit.</p>
+<p><strong>Use subroutines whenever possible</strong>  The J1 CPU executes a call
+instruction in 1 cycle, and a return instruction is usually free.
+So almost any repeated sequence of instructions is worth factoring
+out into a common subroutine.</p>
+<p><strong>Exploit the free return</strong> The assembler can optimize out the last return of a
+subroutine in two cases: when the return can be combined with
+a preceding arithmetic instruction, and when the preceding instruction is a
+call, in which case the assembler replaces the call with a jump.</p>
+<p><strong>Use the merged operations</strong>  The merged operations are useful for loops.  For example to count from <tt class="docutils literal"><span class="pre">LOWER</span></tt> to <tt class="docutils literal"><span class="pre">UPPER</span></tt>, you can do:</p>
+<div class="highlight-python"><pre>UPPER LOWER
+begin
+  ...
+  1+ 2dup=   \ leaves TRUE when counter reaches UPPER
+until</pre>
+</div>
+<p><strong>Exploit fallthru</strong>  The assembler has a non-standard word
+<tt class="docutils literal"><span class="pre">;fallthru</span></tt> which marks the end of a word definition but does not
+assemble a return instruction.  The effect is that execution falls
+through into the next defined word.  So code like this:</p>
+<div class="highlight-python"><pre>: &gt;         swap &lt; ;
+: 0&gt;        d# 0 &gt; ;</pre>
+</div>
+<p>can be rewritten to use <tt class="docutils literal"><span class="pre">;fallthru</span></tt>, saving an instruction:</p>
+<div class="highlight-python"><pre>: 0&gt;        d# 0 ;fallthru
+: &gt;         swap &lt; ;</pre>
+</div>
+</div>
+<div class="section" id="examples">
+<h2><a class="toc-backref" href="#id24">Examples</a><a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<p>The sample <a class="reference internal" href="samples/wireframe/index.html#wireframe"><em>wireframe</em></a> uses the coprocessor to accelerate line
+drawing, and <a class="reference internal" href="samples/splitscreen/index.html#splitscreen"><em>split-screen scroll</em></a> uses the coprocessor to achieve a
+smooth 3-window scroll.  This microprogram is also used in the
+<a class="reference internal" href="samples/asteroids/index.html#asteroids"><em>asteroids</em></a> demo game to split the screen into three sections.</p>
+</div>
+<div class="section" id="coprocessor-only-registers">
+<span id="index-3"></span><h2><a class="toc-backref" href="#id25">Coprocessor-only registers</a><a class="headerlink" href="#coprocessor-only-registers" title="Permalink to this headline">¶</a></h2>
+<p>In addition to the regular 32Kbyte address space at 0x0000-0x7fff,
+the coprocessor has access to the following 16-bit internal registers,
+starting at address 0x8000:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="6%" />
+<col width="10%" />
+<col width="3%" />
+<col width="81%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>0x8000</td>
+<td>YLINE</td>
+<td>R</td>
+<td>Current raster Y line 0-299.  Values during vertical blank are undefined.</td>
+</tr>
+<tr><td>0x8002</td>
+<td>ICAP_O</td>
+<td>R</td>
+<td>FPGA ICAP port, 8-bit output</td>
+</tr>
+<tr><td>0x8006</td>
+<td>ICAP</td>
+<td>W</td>
+<td>ICAP_WRITE (10), ICAP_CE (9), ICAP_CLK (8), ICAP_I (7-0)</td>
+</tr>
+<tr><td>0x800a</td>
+<td>FREQHZ</td>
+<td>W</td>
+<td>timer freqency in Hz, 16-bit unsigned. Reset value is 8000.</td>
+</tr>
+<tr><td>0x800c</td>
+<td>FREQTICK</td>
+<td>R</td>
+<td>8-bit counter, increments at frequency FREQHZ</td>
+</tr>
+<tr><td>0x800e</td>
+<td>P2_V</td>
+<td>RW</td>
+<td>Pin 2 value 0-1</td>
+</tr>
+<tr><td>0x8010</td>
+<td>P2_DIR</td>
+<td>R</td>
+<td>Pin 2 direction, 0=output 1=input.  Reset value is 1.</td>
+</tr>
+<tr><td>0x8012</td>
+<td>RANDOM</td>
+<td>R</td>
+<td>16-bit random number</td>
+</tr>
+<tr><td>0x8014</td>
+<td>CLOCK</td>
+<td>R</td>
+<td>16-bit 50MHz clock</td>
+</tr>
+<tr><td>0x8016</td>
+<td>FLASH_MISO</td>
+<td>R</td>
+<td>SPI flash MISO</td>
+</tr>
+<tr><td>0x8018</td>
+<td>FLASH_MOSI</td>
+<td>W</td>
+<td>SPI flash MOSI</td>
+</tr>
+<tr><td>0x801a</td>
+<td>FLASH_SCK</td>
+<td>W</td>
+<td>SPI flash SCK</td>
+</tr>
+<tr><td>0x801c</td>
+<td>FLASH_SSEL</td>
+<td>W</td>
+<td>SPI flash SSEL</td>
+</tr>
+</tbody>
+</table>
+<p>The <tt class="docutils literal"><span class="pre">ICAP_</span></tt> registers are a direct connection to the FPGA internal
+configuration port.  For details on the ICAP port, see
+<a class="reference external" href="http://www.xilinx.com/support/documentation/user_guides/ug332.pdf">http://www.xilinx.com/support/documentation/user_guides/ug332.pdf</a>
+and sample microprogram
+<a class="reference external" href="/files/gameduino/synth/sketches/j1firmware/reload.fs">reload.fs</a>.</p>
+<p>The <tt class="docutils literal"><span class="pre">FREQ</span></tt> registers are for measuring constant frequency work, e.g.
+sound playback.  Load a frequency value, e.g. 44100, into FREQHZ
+and the 8-bit register FREQTICK increments at that precise frequency.</p>
+<p>The <tt class="docutils literal"><span class="pre">P2_</span></tt> registers control the direction and value of the P2 data line,
+when the IOMODE register is set to 0x4A (ascii &#8216;J&#8217;).
+The sample <a class="reference internal" href="samples/interrupts/index.html#interrupts"><em>interrupts</em></a> shows use of the YLINE and P2_V registers
+to generate interrupts on the Arduino.</p>
+<p>The <tt class="docutils literal"><span class="pre">RANDOM</span></tt> register provides a continously updating random number, derived
+from the hardware&#8217;s white noise generator.</p>
+<p>The <tt class="docutils literal"><span class="pre">CLOCK</span></tt> register is a 16-bit counter that increments every cycle, at 50MHz.</p>
+<p>The <tt class="docutils literal"><span class="pre">FLASH_*</span></tt> registers are an interface to the onboard SPI flash.
+<a class="reference external" href="/files/gameduino/synth/sketches/j1firmware/testflash.fs">flashtest.fs</a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">To prevent coprocessor programs from accidentally changing configuration flash, the
+Gameduino must be in IOMODE &#8216;J&#8217; in order for the coprocessor to access the SPI flash.</p>
+</div>
+<p>Last modified $Date: 2011-05-27 22:57:12 -0700 (Fri, 27 May 2011) $</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <p class="logo"><a href="/sphinx/gameduino/">
+    <img class="logo" src="_static/gdlogo.png" alt="Logo"/>
+  </a></p>
+  <p class="logo"><a href="/sphinx/index.html">
+    <img class="logo" src="_static/tinylogo.png" alt="Logo"/>
+  </a></p>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search termKLAKKKs or a module, class or function name.
+    </p>
+</div>
+<div style="padding-left:40px;" >
+
+</div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011 James Bowman.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
+    </div>
+  </body>
+</html>

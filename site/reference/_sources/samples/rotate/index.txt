@@ -1,0 +1,17 @@
+.. index::
+  pair: rotate; example
+
+.. _rotate:
+
+rotate
+^^^^^^
+
+.. image:: rotate-screenshot.png
+  :scale: 33
+
+Shows use of the 3-bit sprite rotate field.
+
+.. literalinclude:: ../../../files/gameduino/synth/sketches/rotate.pde
+  :language: c++
+
+Last modified $Date: 2011-05-13 11:32:42 -0700 (Fri, 13 May 2011) $

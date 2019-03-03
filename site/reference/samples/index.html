@@ -1,0 +1,158 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Sample sketches &mdash; gameduino</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="top" title="gameduino" href="../index.html" />
+    <link rel="next" title="Basic examples" href="basic.html" />
+    <link rel="prev" title="The GD library" href="../GD/index.html" /> 
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-19722717-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  </head>
+  <body>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="sample-sketches">
+<span id="samples"></span><h1>Sample sketches<a class="headerlink" href="#sample-sketches" title="Permalink to this headline">¶</a></h1>
+<p>Each sample sketch is listed in this section, along with its source code.
+All the code and data for these samples can be
+<a class="reference external" href="/files/gameduino/synth/sketches/Gameduino.zip">downloaded as a zip file</a>.</p>
+<p>To install this library:</p>
+<blockquote>
+<ul class="simple">
+<li>download the ZIP file and unzip it, producing a <tt class="docutils literal"><span class="pre">Gameduino</span></tt> folder</li>
+<li>open your Arduino sketchbook folder. If there is already a folder there called libraries, place the library folder in there. If not, create a folder called libraries in the sketchbook folder, and drop the library folder in there</li>
+<li>restart the Arduino programming environment, and you should see your new library in the <tt class="docutils literal"><span class="pre">Sketch</span> <span class="pre">&gt;</span> <span class="pre">Import</span> <span class="pre">Library</span></tt> menu.</li>
+</ul>
+</blockquote>
+<p>The example sketches are under:
+<tt class="docutils literal"><span class="pre">File</span> <span class="pre">&gt;</span> <span class="pre">Examples</span> <span class="pre">&gt;</span> <span class="pre">Gameduino</span></tt>.</p>
+<p><tt class="docutils literal"><span class="pre">selftest</span></tt> is a good place to start: it runs a series of hardware tests.</p>
+<p>To use <a class="reference internal" href="../GD/index.html#gd"><em>The GD library</em></a> in a sketch, go to the <tt class="docutils literal"><span class="pre">Sketch</span> <span class="pre">&gt;</span> <span class="pre">Import</span> <span class="pre">Library</span></tt> menu and
+select <tt class="docutils literal"><span class="pre">Gameduino</span></tt>.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="basic.html">Basic examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sprites256/index.html">sprites256</a></li>
+<li class="toctree-l2"><a class="reference internal" href="palettes/index.html">palettes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rotate/index.html">rotate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collision/index.html">collision</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scroll/index.html">scroll</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="music.html">Music and sound</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="toccata/index.html">toccata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="midi/index.html">midi playback</a></li>
+<li class="toctree-l2"><a class="reference internal" href="synthesis/index.html">voice synthesis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cowbell/index.html">Sample playback</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced techniques</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="interrupts/index.html">interrupts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="splitscreen/index.html">split-screen scroll</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jkcollision/index.html">jkcollision</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bitmap/index.html">bitmap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wireframe/index.html">wireframe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="snow/index.html">snow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bgcolor/index.html">Background color register</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="bgcolor/index.html#bgstripes-fs">bgstripes.fs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="assetlibrary/index.html">Asset Library</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="assetlibrary/index.html#reading-flash">Reading flash</a></li>
+<li class="toctree-l3"><a class="reference internal" href="assetlibrary/index.html#reading-the-asset-library">Reading the asset library</a></li>
+<li class="toctree-l3"><a class="reference internal" href="assetlibrary/index.html#contents">Contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="assetlibrary/index.html#example-code">Example code</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="demos.html">Demos</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ball/index.html">ball</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chessboard/index.html">chessboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="asteroids/index.html">asteroids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="selftest/index.html">selftest</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="developing.html">Developing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="screenshot/index.html">screenshot</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Last modified $Date: 2011-06-11 16:44:02 -0700 (Sat, 11 Jun 2011) $</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <p class="logo"><a href="/sphinx/gameduino/">
+    <img class="logo" src="../_static/gdlogo.png" alt="Logo"/>
+  </a></p>
+  <p class="logo"><a href="/sphinx/index.html">
+    <img class="logo" src="../_static/tinylogo.png" alt="Logo"/>
+  </a></p>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search termKLAKKKs or a module, class or function name.
+    </p>
+</div>
+<div style="padding-left:40px;" >
+
+</div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011 James Bowman.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
+    </div>
+  </body>
+</html>

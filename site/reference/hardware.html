@@ -1,0 +1,314 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Hardware Technical Reference &mdash; gameduino</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="top" title="gameduino" href="index.html" />
+    <link rel="next" title="Coprocessor" href="coprocessor.html" />
+    <link rel="prev" title="FAQ" href="faq.html" /> 
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-19722717-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  </head>
+  <body>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="hardware-technical-reference">
+<span id="htr"></span><h1>Hardware Technical Reference<a class="headerlink" href="#hardware-technical-reference" title="Permalink to this headline">¶</a></h1>
+<p>A overview of the Gameduino hardware is given in this
+<a class="reference external" href="/files/gameduino/synth/doc/gen/poster.pdf">PDF poster</a>.</p>
+<p>This section gives a more technical description of hardware, and
+some techniques for using it efficiently.</p>
+<div class="section" id="physical-connections">
+<h2>Physical connections<a class="headerlink" href="#physical-connections" title="Permalink to this headline">¶</a></h2>
+<a class="reference internal image-reference" href="_images/DSC_2234_sm.jpg"><img alt="_images/DSC_2234_sm.jpg" src="_images/DSC_2234_sm.jpg" style="width: 385.5px; height: 512.0px;" /></a>
+<p>Gameduino is a standard Arduino shield.  Its required connections are</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="76%" />
+</colgroup>
+<tbody valign="top">
+<tr><td>GND</td>
+<td>Signal ground</td>
+</tr>
+<tr><td>3.3V</td>
+<td>VCC</td>
+</tr>
+<tr><td>5V</td>
+<td>Main supply: 3-6V</td>
+</tr>
+<tr><td>11</td>
+<td>SPI MOSI</td>
+</tr>
+<tr><td>12</td>
+<td>SPI MISO</td>
+</tr>
+<tr><td>13</td>
+<td>SPI SCK</td>
+</tr>
+<tr><td>9</td>
+<td>SPI SEL</td>
+</tr>
+</tbody>
+</table>
+<p>In addition pin 2 may be used as an auxiliary control, see IOMODE below.</p>
+</div>
+<div class="section" id="low-level-spi-interface">
+<h2>Low-level SPI interface<a class="headerlink" href="#low-level-spi-interface" title="Permalink to this headline">¶</a></h2>
+<p>The Gameduino appears to the microprocessor as an SPI peripheral,
+with two commands: read memory and write memory.  The Gameduino&#8217;s
+total memory is 32Kbytes, so addresses are 15-bit.  The remaining bit
+indicates read/write, shown below.</p>
+<p>To read memory, the microprocessor selects the Gameduino, then
+issues a read memory command:</p>
+<div class="highlight-python"><pre>high byte
+low byte
+...</pre>
+</div>
+<p>each subsequent byte read returns the next memory location.</p>
+<p>The write memory command operates similarly:</p>
+<div class="highlight-python"><pre>(high byte | 0x80)
+low byte
+...</pre>
+</div>
+<p>and also allows a block write simply by continuing to send bytes.</p>
+<p>As an example, the Arduino can copy location 0x0113 to 0x0a00 with this code:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="n">digitalWrite</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="n">LOW</span><span class="p">);</span>           <span class="c1">// start SPI transaction</span>
+<span class="n">SPI</span><span class="p">.</span><span class="n">transfer</span><span class="p">(</span><span class="n">highByte</span><span class="p">(</span><span class="mh">0x0113</span><span class="p">));</span> <span class="c1">// start read from 0x0113</span>
+<span class="n">SPI</span><span class="p">.</span><span class="n">transfer</span><span class="p">(</span><span class="n">lowByte</span><span class="p">(</span><span class="mh">0x0113</span><span class="p">));</span>
+<span class="n">byte</span> <span class="n">value</span> <span class="o">=</span> <span class="n">SPI</span><span class="p">.</span><span class="n">transfer</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>   <span class="c1">// read byte at 0x0113</span>
+<span class="n">digitalWrite</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="n">HIGH</span><span class="p">);</span>          <span class="c1">// end SPI transaction</span>
+
+<span class="n">digitalWrite</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="n">LOW</span><span class="p">);</span>           <span class="c1">// start SPI transaction</span>
+<span class="n">SPI</span><span class="p">.</span><span class="n">transfer</span><span class="p">(</span><span class="n">highByte</span><span class="p">(</span><span class="mh">0x0a00</span><span class="p">)</span> <span class="o">|</span> <span class="mh">0x80</span><span class="p">);</span> <span class="c1">// start write to 0xa00</span>
+<span class="n">SPI</span><span class="p">.</span><span class="n">transfer</span><span class="p">(</span><span class="n">lowByte</span><span class="p">(</span><span class="mh">0x0a00</span><span class="p">));</span>
+<span class="n">SPI</span><span class="p">.</span><span class="n">transfer</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>            <span class="c1">// write byte at 0x0a00</span>
+<span class="n">digitalWrite</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="n">HIGH</span><span class="p">);</span>          <span class="c1">// end SPI transaction</span>
+</pre></div>
+</div>
+<p>These operations are more conveniently handled by <a class="reference internal" href="GD/index.html#gd"><em>The GD library</em></a>:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="n">GD</span><span class="p">.</span><span class="n">wr</span><span class="p">(</span><span class="mh">0xa00</span><span class="p">,</span> <span class="n">GD</span><span class="p">.</span><span class="n">rd</span><span class="p">(</span><span class="mh">0x113</span><span class="p">));</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="background-graphics">
+<span id="index-0"></span><h2>Background graphics<a class="headerlink" href="#background-graphics" title="Permalink to this headline">¶</a></h2>
+<p>The 64x64 character screen RAM, together with the character/palette
+RAMs define the background image.  This image is 512x512 pixels,
+from which the hardware displays a 400x300 window.  The SCROLL_X
+and SCROLL_Y registers control the location of the top-left corner
+of this window.  The display window wraps around the 512x512 screen area, so an infinite scrolling
+area is possible, as shown by sample <a class="reference internal" href="samples/scroll/index.html#scroll"><em>scroll</em></a>.</p>
+<p>Memory at 0000-0FFF (RAM_PIC) is a 64x64 grid of byte character codes.  The hardware
+uses the character code to look up the character image and palette in memory areas
+1000-1FFF (RAM_CHR) and 2000-27FF (RAM_PAL).  So for each displayed pixel, the hardware:</p>
+<blockquote>
+<ul class="simple">
+<li>looks up the character code in RAM_PIC</li>
+<li>looks up that character&#8217;s pixel in RAM_CHR</li>
+<li>looks up that character&#8217;s pixel&#8217;s color in RAM_PAL</li>
+</ul>
+</blockquote>
+<p>1000-1FFF (RAM_CHR) specifies the 2-pixel 8x8 image for each of the 256 characters.
+Layout is top-left to bottom-right, pixels are packed four in each
+byte, with the leftmost pixel in the most significant two bits.</p>
+<p>2000-27FF (RAM_PAL) specifies the four colors used by each of the 256 characters.  See <a class="reference internal" href="#colors"><em>Colors</em></a>.
+If a color value&#8217;s A bit is set, then the color is taken from register BG_COLOR instead.</p>
+<p>For a smooth scroll, wait for vertical blank before updating the scroll
+registers.</p>
+<p>By updating offscreen characters, you can implement a much larger scroll area.</p>
+</div>
+<div class="section" id="sprite-graphics">
+<span id="htr-sprite"></span><span id="index-1"></span><h2>Sprite graphics<a class="headerlink" href="#sprite-graphics" title="Permalink to this headline">¶</a></h2>
+<p>The hardware always draws sprites in order, from lower-number to
+higher.  So higher-numbered sprites appear in front of lower-numbered sprites.
+Sprite coordinates are 9-bit numbers 0-511.  (0,0) is the top left
+corner of the screen.  Sprites can appear partially offscreen.</p>
+<p>Memory at 3000-37FF (RAM_SPR) holds the control data for the 256
+sprites.  There are two sprite pages to allow double-buffered
+display.  The displayed page is selected by register SPR_PAGE.  Each
+sprite is controlled by a 32-bit value:</p>
+<blockquote>
+<ul class="simple">
+<li>collision class (J or K) membership (bit 31) (see example <a class="reference internal" href="samples/jkcollision/index.html#jkcollision"><em>jkcollision</em></a>)</li>
+<li>source image 0-63 (bits 25-30)</li>
+<li>Y coordinate 0-511 (bits 24-16)</li>
+<li>palette select 0-15 (bits 12-15) (see example <a class="reference internal" href="samples/palettes/index.html#palettes"><em>palettes</em></a>)<ul>
+<li>For 256 color sprites (bits 14-15 = 00) bits 12-13 specify the palette, see below</li>
+<li>For 16 color sprites (bits 14-15 = 01) bit 13 specifies the source nibble, and bit 12 specifies the palette A/B</li>
+<li>For 4 color sprites (bit 15 = 1) bits 13-14 specify the source bit pair (00 is lsb, 11 is msb), and bit 12 specifies the palette A/B</li>
+</ul>
+</li>
+<li>rotation and flip 0-7 (bits 11-9) (see example <a class="reference internal" href="samples/rotate/index.html#rotate"><em>rotate</em></a>)</li>
+<li>X coordinate 0-511 (bits 8-0)</li>
+</ul>
+</blockquote>
+<p>Memory at 3800-3FFF (RAM_SPRPAL) holds the four color palettes
+available for 256-color sprites.  Each palette is a block of 256
+colors (512 bytes).  For sprites, bit 15 (A) of a color value
+true indicates transparency.</p>
+<p>Memory at 4000-7FFF (RAM_SPRIMG) holds the 64 sprite images.  Each
+image is 256 bytes, one byte per pixel for the 16x16 sprite.  Using the sprite palettes means that
+a single 256-byte sprite image can hold 1 256-color image, 2 16-color images or 4 4-color images.</p>
+</div>
+<div class="section" id="sound">
+<h2>Sound<a class="headerlink" href="#sound" title="Permalink to this headline">¶</a></h2>
+<p>The hardware&#8217;s sound is based on a system of additive synthesis.
+There are 64 indpedent voices: each voice generates a tone at a
+specific frequency.  These tones can be a simple sine wave or white
+noise.  In addition to a frequency value (measured in 1/4 Hz), each
+voice has a waveform select bit (sine vs noise), and left and right amplitude values.
+To avoid clipping, the amplitudes for all voices should sum to 255 or less
+for left channel and right channel.</p>
+<p>The layout of each voice control register is described below under VOICES.</p>
+</div>
+<div class="section" id="registers">
+<span id="index-2"></span><h2>Registers<a class="headerlink" href="#registers" title="Permalink to this headline">¶</a></h2>
+<p>2800 (IDENT) Gameduino identification - always reads as 0x6D</p>
+<p>2801 (REV) Hardware revision number.  High 4 bits are major revision, low 4 bits are minor.</p>
+<p>2802 (FRAME) is the frame counter, 1 byte, read-only.</p>
+<p>2803 (VBLANK) is the vertical blanking flag, set when the display system is in the vertical blank period.  The vertical blank is about 1.3 ms long (<a class="reference external" href="http://tinyvga.com/vga-timing/800x600&#64;72Hz">http://tinyvga.com/vga-timing/800x600&#64;72Hz</a>). 1 byte, read-only.</p>
+<p>2804 (SCROLL_X) is the horizontal pixel scroll register. 2 bytes 0-511, read-write.</p>
+<p>2806 (SCROLL_Y) is the vertical pixel scroll register. 2 bytes 0-511, read-write.</p>
+<p>2808 (JK_MODE) is the sprite JK mode enable control. 1 byte 0-1, read-write.</p>
+<p>2809 (J1_RESET) coprocessor reset: write 1 to hold the coprocessor in a reset state, 0 to release</p>
+<p>280A (SPR_DISABLE) sprite disable, 0 enable sprite display, 1 disable sprite display</p>
+<p>280B (SPR_PAGE) sprite page select: 0 display from locations 3000-33FF, 1 from 3400-37FF</p>
+<p>280C (IOMODE) controls the behavior of pin 2:</p>
+<blockquote>
+<ul class="simple">
+<li>0x00 - pin 2 ignored</li>
+<li>0x46 (ascii &#8216;F&#8217;) - pin 2 is onboard SPI dataflash enable</li>
+<li>0x4A (ascii &#8216;J&#8217;) - pin 2 under coprocessor control</li>
+</ul>
+</blockquote>
+<p>280E (BG_COLOR) background color, used when background color is transparent</p>
+<p>2810 (SAMPLE_L) audio left sample, 2 bytes, signed.  read-write.</p>
+<p>2812 (SAMPLE_R) audio right sample, 2 bytes, signed.  read-write.</p>
+<p>281E (SCREENSHOT_Y) screenshot Y line sample register, 2 bytes.
+To read the pixels of a screen line Y, load this register with (0x8000
+| Y), then wait until the high bit of SCREENSHOT_Y reads 1.  The pixel
+data can then be read from the 800 bytes of SCREENSHOT RAM.  The
+low 9 bits of this register always hold the current Y scanline
+value, 0-299.  To disable screenshot, write zero to SCREENSHOT_Y.</p>
+<p>2840 (PALETTE16A) the 16 color sprite palette, A.  32 bytes, read-write.  See <a class="reference internal" href="#colors"><em>Colors</em></a> for format.</p>
+<p>2860 (PALETTE16B) the 16 color sprite palette, B.  32 bytes, read-write.  See <a class="reference internal" href="#colors"><em>Colors</em></a> for format.</p>
+<p>2880 (PALETTE4A) the 4 color sprite palette, A.  8 bytes, read-write.  See <a class="reference internal" href="#colors"><em>Colors</em></a> for format.</p>
+<p>2888 (PALETTE4B) the 4 color sprite palette, B.  8 bytes, read-write.  See <a class="reference internal" href="#colors"><em>Colors</em></a> for format.</p>
+<p>2890 (COMM) Coprocessor communication block.  48 bytes, read-write.</p>
+<p>2900 (COLLISION) 256-byte collision RAM.  At the end of each frame
+refresh, the collision RAM&#8217;s 256 byte entries hold the number of
+a colliding sprite, or
+0xff if
+the sprite did not cover up any other.
+In JK_MODE, only sprites with a
+different J/K value (bit 31 in the sprite&#8217;s RAM_SPR entry) will
+trigger the collision flag.  256 bytes, read-only.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Because the collision RAM is computed during frame scanout, it is only readable during vertical blanking (see the VBLANK register above).  COLLISION reads as 0xff at other times.</p>
+</div>
+<p>2A00 (VOICES) is the base of the 64 voice registers.  Each register is a 32-bit value:</p>
+<blockquote>
+<ul class="simple">
+<li>frequency (bits 0-14) in Hz multiplied by 4.  So 440 Hz is <img class="math" src="_images/math/892b2cd3b73311b6e5e77194faff55b153b1e5c5.png" alt="440 \times 4 = 1760"/>.</li>
+<li>waveform (bit 15) 0 selects sine wave, 1 selects white noise</li>
+<li>left amplitude (bits 16-23)</li>
+<li>right amplitude (bits 24-31)</li>
+</ul>
+</blockquote>
+<p>2B00 (J1_CODE) Coprocessor instruction space, 256 bytes, read-write.  See <a class="reference internal" href="coprocessor.html#coprocessor"><em>Coprocessor</em></a>.</p>
+<p>2C00 (SCREENSHOT) Screenshot line RAM, 400 pixels.  800 bytes, read-only.</p>
+</div>
+<div class="section" id="coprocessor">
+<h2>Coprocessor<a class="headerlink" href="#coprocessor" title="Permalink to this headline">¶</a></h2>
+<p>The coprocessor is described in its own section: <a class="reference internal" href="coprocessor.html#coprocessor"><em>Coprocessor</em></a></p>
+</div>
+<div class="section" id="colors">
+<span id="id1"></span><h2>Colors<a class="headerlink" href="#colors" title="Permalink to this headline">¶</a></h2>
+<p>Colors are represented in-memory in ARGB1555 format:</p>
+<blockquote>
+<ul class="simple">
+<li>one bit alpha (bit 15)</li>
+<li>five bit red (bits 14-10)</li>
+<li>five bit green (bits 9-5)</li>
+<li>five bit blue (bits 4-0)</li>
+</ul>
+</blockquote>
+<p>Last modified $Date: 2011-06-11 16:44:02 -0700 (Sat, 11 Jun 2011) $</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <p class="logo"><a href="/sphinx/gameduino/">
+    <img class="logo" src="_static/gdlogo.png" alt="Logo"/>
+  </a></p>
+  <p class="logo"><a href="/sphinx/index.html">
+    <img class="logo" src="_static/tinylogo.png" alt="Logo"/>
+  </a></p>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search termKLAKKKs or a module, class or function name.
+    </p>
+</div>
+<div style="padding-left:40px;" >
+
+</div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011 James Bowman.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
+    </div>
+  </body>
+</html>

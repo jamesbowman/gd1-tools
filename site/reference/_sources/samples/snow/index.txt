@@ -1,0 +1,32 @@
+.. index::
+  pair: RANDOM; example
+
+.. _snow:
+
+snow
+^^^^
+
+.. image:: snow-screenshot.png
+
+.. raw:: html
+
+  <object width="480" height="385"><param name="movie" value="http://www.youtube.com/v/NjPsFqebAog?fs=1&amp;hl=en_US"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/NjPsFqebAog?fs=1&amp;hl=en_US" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="480" height="385"></embed></object>
+
+The Gameduino hardware has a built-in random number generator.
+The hardware uses it internally for the white noise sound effect, and your code can
+access it using the coprocessor's ``RANDOM`` register.
+
+Here it is being used to fill the screen with random noise - in the style of 
+an off-station analog television.
+
+.. literalinclude:: ../../../files/gameduino/synth/sketches/snow.pde
+  :language: c++
+
+After the microprogram is loaded, there is nothing else that the Arduino program needs to do; the Gameduino
+continuously updates the background character display.
+
+.. literalinclude:: ../../../files/gameduino/synth/sketches/j1firmware/random.fs
+  :language: none
+
+
+Last modified $Date: 2011-05-13 11:32:42 -0700 (Fri, 13 May 2011) $

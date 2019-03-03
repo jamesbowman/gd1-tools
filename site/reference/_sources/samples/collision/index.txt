@@ -1,0 +1,25 @@
+.. index::
+  pair: collision detection; example
+
+.. _collision:
+
+collision
+^^^^^^^^^
+
+.. image:: collision-screenshot.png
+  :scale: 33
+
+.. raw:: html
+
+  <object width="400" height="300"><param name="movie" value="http://www.youtube.com/v/udTzXRlSb_M?hl=en&fs=1"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/udTzXRlSb_M?hl=en&fs=1" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="400" height="300"></embed></object>
+
+shows collision detection involving many objects.
+The main loop uses hardware collision detection to find collisions between balls, then runs a simple
+elastic collision function to bounce the balls.
+
+Using the hardware for collision detection is significantly faster than using software.
+
+.. literalinclude:: ../../../files/gameduino/synth/sketches/collision.pde
+  :language: c++
+
+Last modified $Date: 2011-05-13 11:32:42 -0700 (Fri, 13 May 2011) $

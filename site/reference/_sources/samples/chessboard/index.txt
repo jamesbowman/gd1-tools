@@ -1,0 +1,37 @@
+.. index::
+  pair: chessboard; demo
+
+.. _chessboard:
+
+chessboard
+^^^^^^^^^^
+
+.. image:: chessboard-screenshot.png
+  :scale: 33
+
+.. raw:: html
+
+  <object width="480" height="385"><param name="movie" value="http://www.youtube.com/v/G08OcbCDat8?fs=1&amp;hl=en_US"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/G08OcbCDat8?fs=1&amp;hl=en_US" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="480" height="385"></embed></object>
+
+This demonstration just plays back a single game; it's not (yet)
+an actual chess program.  It's a demonstration of graphical chess-board
+display.
+
+The board itself is a simple repeating background graphic, originally this 32x64 wood image:
+
+.. image:: Wood32.png
+
+The pieces are drawn as 256-color sprites.  Each piece is a 32x32 pixel image, so uses four hardware
+sprites.  The black and white pieces share the same sprite images, but have different palettes.
+
+.. image:: black.png
+.. image:: white.png
+
+The clocks on the right are drawn as 16x32 sprites in 16 colors, again with two palettes for the opposing sides:
+
+.. image:: digits.png
+
+.. literalinclude:: ../../../files/gameduino/synth/sketches/chessboard.pde
+  :language: c++
+
+Last modified $Date: 2011-05-13 11:32:42 -0700 (Fri, 13 May 2011) $

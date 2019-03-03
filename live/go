@@ -1,0 +1,3 @@
+python unit.py || exit
+python service.py
+# python lossy.py

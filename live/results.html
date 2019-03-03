@@ -1,0 +1,29 @@
+<HTML>
+<HEAD>
+<TITLE>encode complete</TITLE>
+#include "style.inc"
+</HEAD>
+
+<BODY BGCOLOR="#ffffff">
+<H1>image encode successful</H1>
+
+#for $line in $report
+  <p>$line</p>
+#end for
+
+#if $varExists('preview')
+  <img src="$preview">
+
+  <p>And to use this image in your sketch, download <a href="$header">this header</a> or paste in this code block:
+  <pre>
+  $code
+  </pre>
+
+#else
+<p>Please see <a href="http://excamera.com/sphinx/gameduino/artists.html">Gameduino for Artists</a> for more details
+#end if
+
+</BODY>
+</HTML>
+
+

@@ -1,0 +1,48 @@
+#def title: Sprite sheet converter
+#def business
+  <p>This utility converts an image to Gameduino sprite data.
+  A summary of what is valid:
+  <ul>
+  <li>sprites should be spaced regularly in the image, as 'size' below
+  <li>the image should have transparency
+  </ul>
+
+  See <a href="http://excamera.com/sphinx/gameduino/artists.html">Gameduino for Artists</a> for more details
+
+    <h2>Upload an image file</h2>
+    <form action="upload" method="post" enctype="multipart/form-data">
+    <table>
+    <tr><td>file:</td><td><input type="file" name="myFile" required="required"/></td></tr>
+    <tr><td>name:</td><td><input type="text" name="name" value="sprite" /></td></tr>
+    <tr><td>compress:</td><td><input type="checkbox" name="compress" value="compress" /></td></tr>
+
+    <tr><td>palette:</td><td><select name="palette">
+    <option value="PALETTE256A" selected="selected">PALETTE256A</option>
+    <option value="PALETTE256B">PALETTE256B</option>
+    <option value="PALETTE256C">PALETTE256C</option>
+    <option value="PALETTE256D">PALETTE256D</option>
+    <option value="PALETTE16A">PALETTE16A</option>
+    <option value="PALETTE16B">PALETTE16B</option>
+    <option value="PALETTE4A">PALETTE4A</option>
+    <option value="PALETTE4B">PALETTE4B</option>
+    </select></td></tr>
+    <script>
+      function validate(evt) {
+        var theEvent = evt || window.event;
+        var key = theEvent.keyCode || theEvent.which;
+        key = String.fromCharCode( key );
+        var regex = /[0-9]/;
+        if( !regex.test(key) ) {
+          theEvent.returnValue = false;
+          if(theEvent.preventDefault) theEvent.preventDefault();
+        }
+      }
+    </script>
+    <tr><td>size:</td><td>width<input type="text" name="width" maxlength="3" value="16" size="3" onkeypress='validate(event)' />
+    height<input type="text" name="height" maxlength="3" value="16" size="3" onkeypress='validate(event)' /></td></tr>
+    </table>
+
+    <p><input type="submit" />
+    </form>
+#end def
+#include "common.tmpl"

@@ -1,0 +1,113 @@
+.. _gd:
+
+The GD library
+--------------
+
+.. highlight:: c++
+
+The GD library
+(`download </files/gameduino/synth/sketches/Gameduino.zip>`_)
+is a set of routines that make it easier to control the Gameduino.
+
+The GD library is a very thin layer between your code and the
+`hardware </files/gameduino/synth/doc/gen/poster.pdf>`_.
+
+While it is possible to control the Gameduino using the Arduino SPI library,
+the samples use the GD library to do some common operations.  For example, "hello world"
+using GD::
+
+  #include <SPI.h>
+  #include <GD.h>
+
+  void setup()
+  {
+    GD.begin();
+
+    // Load the standard ascii font
+    GD.ascii();
+
+    GD.putstr(0, 0, "Hello world");
+  }
+
+  void loop()
+  {
+  }
+
+.. cpp:function:: bool GD::begin()
+
+  Initialize the connection to the adapter, and reset the adapter.
+
+.. cpp:function:: byte GD::rd(unsigned int addr)
+
+  Read a byte from memory location ``addr``
+
+.. cpp:function:: void GD::wr(unsigned int addr, byte v)
+
+  Write byte ``v`` to memory location ``addr``.
+
+.. cpp:function:: unsigned int GD::rd16(unsigned int addr)
+
+  Read a 16-bit word from memory locations addr and addr+1
+
+.. cpp:function:: void GD::wr16(unsigned int addr, unsigned int v)
+
+  Write 16-bit word ``v`` to memory locations addr and addr+1
+
+.. cpp:function:: void GD::fill(int addr, byte v, unsigned int count)
+
+  Fill ``count`` memory locations starting at ``addr`` with value ``v``
+
+.. cpp:function:: void GD::copy(unsigned int addr, prog_uchar *src, int count)
+
+  Copy ``count`` bytes from `AVR flash memory <http://www.arduino.cc/en/Reference/PROGMEM>`_ location ``src`` to ``addr``.  See also :ref:`progmem`.
+
+.. cpp:function:: void GD::setpal(int pal, unsigned int rgb)
+
+  Set character palette entry ``pal`` to color ``rgb``.  See also :c:func:`RGB` for rgb encoding.
+
+.. cpp:function:: void GD::sprite(int spr, int x, int y, byte image, byte palette, byte rot = 0, byte jk = 0)
+
+    Set attributes of sprite ``spr``
+
+    :param spr: sprite number, 0-255
+    :param x: x coordinate, 0-511.  0 is left edge of screen.
+    :param y: y coordinate, 0-511.  0 is top edge of screen.
+    :param image: image number, 0-63
+    :param palette: palette control 0-15
+    :param rot: rotate/flip control 0-7
+    :param jk: J/K collision select, 0-1
+
+    For details on these attributes, see
+    `the reference poster </files/gameduino/synth/doc/gen/poster.pdf>`_ or :ref:`htr_sprite`.
+
+.. cpp:function:: void GD::sprite2x2(int spr, int x, int y, byte image, byte palette, byte rot = 0, byte jk = 0)
+
+  Set attributes of four sprites in a 2x2 configuration.  (x,y) specifies the center of the group.
+  Other arguments are as for :cpp:func:`GD::sprite`.
+
+.. cpp:function:: void GD::waitvblank()
+  
+  Waits for the start of the vertical blanking period.  By waiting for vertical blanking:
+
+    * any animation is guaranteed to be smooth
+    * the sprite collision RAM is valid
+
+.. cpp:function:: void GD::microcode(prog_uchar *src, int count)
+
+  Copy ``count`` bytes from `AVR flash memory <http://www.arduino.cc/en/Reference/PROGMEM>`_ location ``src`` 
+  into the coprocessor's instruction RAM, and restart the coprocessor.  The use of the coprocessor is
+  described in :ref:`coprocessor`.
+
+.. cpp:function:: void GD::ascii()
+    
+    Load a standard 8x8 ASCII font into character RAM.  This is useful for debugging and status display.
+
+.. cpp:function:: void GD::putstr(int x, int y, const char *s)
+
+    Draw string ``s`` at character screen position (x,y).  Assumes that a standard character set has been loaded, e.g. by :cpp:func:`GD::ascii`.
+
+.. c:function:: unsigned int RGB(byte r, byte g, byte b)
+
+    Return the 15-bit encoding of an RGB color.  ``r``, ``g`` and ``b`` are 0-255.
+
+Last modified $Date: 2011-05-13 11:32:42 -0700 (Fri, 13 May 2011) $

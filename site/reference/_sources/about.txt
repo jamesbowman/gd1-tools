@@ -1,0 +1,106 @@
+:Summary: A self-contained video and audio adapter, aimed at games
+.. _about:
+
+Gameduino: a game adapter for the Arduino
+=========================================
+
+Tiny microcontrollers like the Atmel AVR used in the Arduino are
+now much more powerful than the 8-bit computers from the 1980s.  So
+why not use them to play video games?
+
+.. image:: DSC_2231_sm.jpg
+  :align: right
+
+Gameduino is a game adapter for Arduino - or anything else with an SPI
+interface - built as a single shield that stacks up on top of the
+Arduino and has plugs for a VGA monitor and stereo speakers.
+
+The sound and graphics are definitely old-school, but
+thanks to the latest FPGA technology,
+the sprite capabilities are a step above those of
+`past machines <http://en.wikipedia.org/wiki/Sprite_(computer_graphics)#Hardware_sprites>`_.
+
+* video output is 400x300 pixels in 512 colors
+
+ * all color processed internally at 15-bit precision
+ * compatible with any standard VGA monitor (800x600 @ 72Hz)
+ * background graphics
+
+   * 512x512 pixel character background
+   * 256 characters, each with independent 4 color palette
+   * pixel-smooth X-Y wraparound scroll
+
+ * foreground graphics
+
+   * each sprite is 16x16 pixels with per-pixel transparency
+   * each sprite can use 256, 16 or 4 colors
+   * four-way rotate and flip
+   * 96 sprites per scan-line, 1536 texels per line
+   * pixel-perfect sprite collision detection
+
+* audio output is a stereo 12-bit frequency synthesizer
+
+ * 64 independent voices 10-8000 Hz
+ * per-voice sine wave or white noise
+ * sample playback channel
+
+The Gameduino is controlled via SPI read/write operations, and looks
+to the CPU like a 32Kbyte RAM.
+(Unlike many 8-bit machines, there are no restrictions on when you can access this RAM).
+There is a handy :download:`reference poster <poster.pdf>` showing
+how the whole system works, and a set of
+:ref:`sample programs <samples>` and
+the :ref:`GD library <gd>`.
+
+.. image:: poster.jpg
+  :target: _downloads/poster.pdf
+  :align: right
+
+.. toctree::
+  :maxdepth: 3
+
+  faq
+  hardware
+  coprocessor
+  GD/index
+  samples/index
+  artists
+  python
+  cookbook
+  resources
+  making
+
+* :ref:`genindex`
+
+Gameduino is open-source hardware (BSD license) and all its code is GPL licensed.
+
+Logo design by `iLKke <http://ilkke.blogspot.com>`_.
+
+.. image:: samples/collision/collision-screenshot.jpg
+  :target: samples/collision/index.html
+
+.. image:: samples/sprites256/sprites256-screenshot.jpg
+  :target: samples/sprites256/index.html
+
+.. image:: samples/scroll/scroll-screenshot.jpg
+  :target: samples/scroll/index.html
+
+.. image:: samples/asteroids/asteroids-screenshot.jpg
+  :target: samples/asteroids/index.html
+
+.. image:: samples/wireframe/wireframe-screenshot.jpg
+  :target: samples/wireframe/index.html
+
+.. image:: samples/selftest/selftest-screenshot.jpg
+  :target: samples/selftest/index.html
+
+.. image:: samples/splitscreen/splitscreen-screenshot.jpg
+  :target: samples/splitscreen/index.html
+
+.. image:: samples/bitmap/bitmap-screenshot.jpg
+  :target: samples/bitmap/index.html
+
+.. image:: samples/bgcolor/bgcolor-screenshot.jpg
+  :target: samples/bgcolor/index.html
+
+Last modified $Date: 2011-05-19 14:47:05 -0700 (Thu, 19 May 2011) $

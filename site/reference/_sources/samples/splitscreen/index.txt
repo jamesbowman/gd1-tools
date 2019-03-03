@@ -1,0 +1,51 @@
+.. index::
+  pair: split-screen scroll; example
+  pair: SCROLL_X; example
+  pair: SCROLL_Y; example
+
+.. _splitscreen:
+
+split-screen scroll
+^^^^^^^^^^^^^^^^^^^
+
+.. image:: splitscreen-screenshot.png
+  :scale: 66
+
+.. raw:: html
+
+  <object width="400" height="300"><param name="movie" value="http://www.youtube.com/v/pNIr4udcp58?hl=en&fs=1"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/pNIr4udcp58?hl=en&fs=1" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="400" height="300"></embed></object>
+
+This sample loads a single 512x512 image (below) into character
+RAM, then uses the scroll registers to split the screen into three
+independently scrolling windows.
+
+.. image:: ../../../files/gameduino/synth/sketches/graphics/splitscreen/splitscreen.png
+
+The hardware only has a single pair of scroll registers - SCROLL_X
+and SCROLL_Y.  This demo uses a small microprogram running on the
+coprocessor to split the screen.
+
+The microprogram lets you show three different sections of the
+screen RAM: in this example, the program shows three slices, each
+100 pixels high.  The top section doesn't move, the middle section
+is rotating around the word 'SCREEN' and the bottom section is just
+scrolling horizontally.
+
+The microprogram running on the Gameduino is quite short: it just
+watches the YLINE register (in ``waitline``), and loads the SCROLL_X
+and Y registers at the start of each section.  This technique -
+modifying hardware registers during the frame readout to stretch
+the hardware - is sometimes called "raster chasing".
+
+.. literalinclude:: ../../../files/gameduino/synth/sketches/j1firmware/splitscreen.fs
+  :language: none
+
+
+The demo sketch itself loads the graphic image into RAM, then sets
+the scroll values in the COMM area to achieve the groovy window
+scrolling effect.
+
+.. literalinclude:: ../../../files/gameduino/synth/sketches/splitscreen.pde
+  :language: c++
+
+Last modified $Date: 2011-05-13 11:32:42 -0700 (Fri, 13 May 2011) $

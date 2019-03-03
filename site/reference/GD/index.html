@@ -1,0 +1,239 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The GD library &mdash; gameduino</title>
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="top" title="gameduino" href="../index.html" />
+    <link rel="next" title="Sample sketches" href="../samples/index.html" />
+    <link rel="prev" title="Coprocessor" href="../coprocessor.html" /> 
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-19722717-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  </head>
+  <body>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="the-gd-library">
+<span id="gd"></span><h1>The GD library<a class="headerlink" href="#the-gd-library" title="Permalink to this headline">¶</a></h1>
+<p>The GD library
+(<a class="reference external" href="/files/gameduino/synth/sketches/Gameduino.zip">download</a>)
+is a set of routines that make it easier to control the Gameduino.</p>
+<p>The GD library is a very thin layer between your code and the
+<a class="reference external" href="/files/gameduino/synth/doc/gen/poster.pdf">hardware</a>.</p>
+<p>While it is possible to control the Gameduino using the Arduino SPI library,
+the samples use the GD library to do some common operations.  For example, &#8220;hello world&#8221;
+using GD:</p>
+<div class="highlight-c++"><div class="highlight"><pre><span class="cp">#include &lt;SPI.h&gt;</span>
+<span class="cp">#include &lt;GD.h&gt;</span>
+
+<span class="kt">void</span> <span class="n">setup</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="n">GD</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
+
+  <span class="c1">// Load the standard ascii font</span>
+  <span class="n">GD</span><span class="p">.</span><span class="n">ascii</span><span class="p">();</span>
+
+  <span class="n">GD</span><span class="p">.</span><span class="n">putstr</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&quot;Hello world&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">loop</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="function">
+<dt id="GD::begin">
+bool <tt class="descclassname">GD::</tt><tt class="descname">begin</tt><big>(</big><big>)</big><a class="headerlink" href="#GD::begin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the connection to the adapter, and reset the adapter.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="GD::rd__unsigned-i">
+byte <tt class="descclassname">GD::</tt><tt class="descname">rd</tt><big>(</big>unsigned int <em>addr</em><big>)</big><a class="headerlink" href="#GD::rd__unsigned-i" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a byte from memory location <tt class="docutils literal"><span class="pre">addr</span></tt></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="GD::wr__unsigned-i.byte">
+void <tt class="descclassname">GD::</tt><tt class="descname">wr</tt><big>(</big>unsigned int <em>addr</em>, byte <em>v</em><big>)</big><a class="headerlink" href="#GD::wr__unsigned-i.byte" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write byte <tt class="docutils literal"><span class="pre">v</span></tt> to memory location <tt class="docutils literal"><span class="pre">addr</span></tt>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="GD::rd16__unsigned-i">
+unsigned int <tt class="descclassname">GD::</tt><tt class="descname">rd16</tt><big>(</big>unsigned int <em>addr</em><big>)</big><a class="headerlink" href="#GD::rd16__unsigned-i" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a 16-bit word from memory locations addr and addr+1</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="GD::wr16__unsigned-i.unsigned-i">
+void <tt class="descclassname">GD::</tt><tt class="descname">wr16</tt><big>(</big>unsigned int <em>addr</em>, unsigned int <em>v</em><big>)</big><a class="headerlink" href="#GD::wr16__unsigned-i.unsigned-i" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write 16-bit word <tt class="docutils literal"><span class="pre">v</span></tt> to memory locations addr and addr+1</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="GD::fill__i.byte.unsigned-i">
+void <tt class="descclassname">GD::</tt><tt class="descname">fill</tt><big>(</big>int <em>addr</em>, byte <em>v</em>, unsigned int <em>count</em><big>)</big><a class="headerlink" href="#GD::fill__i.byte.unsigned-i" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fill <tt class="docutils literal"><span class="pre">count</span></tt> memory locations starting at <tt class="docutils literal"><span class="pre">addr</span></tt> with value <tt class="docutils literal"><span class="pre">v</span></tt></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="GD::copy__unsigned-i.prog_ucharP.i">
+void <tt class="descclassname">GD::</tt><tt class="descname">copy</tt><big>(</big>unsigned int <em>addr</em>, prog_uchar* <em>src</em>, int <em>count</em><big>)</big><a class="headerlink" href="#GD::copy__unsigned-i.prog_ucharP.i" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy <tt class="docutils literal"><span class="pre">count</span></tt> bytes from <a class="reference external" href="http://www.arduino.cc/en/Reference/PROGMEM">AVR flash memory</a> location <tt class="docutils literal"><span class="pre">src</span></tt> to <tt class="docutils literal"><span class="pre">addr</span></tt>.  See also <a class="reference internal" href="../cookbook.html#progmem"><em>Use PROGMEM for graphics data</em></a>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="GD::setpal__i.unsigned-i">
+void <tt class="descclassname">GD::</tt><tt class="descname">setpal</tt><big>(</big>int <em>pal</em>, unsigned int <em>rgb</em><big>)</big><a class="headerlink" href="#GD::setpal__i.unsigned-i" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set character palette entry <tt class="docutils literal"><span class="pre">pal</span></tt> to color <tt class="docutils literal"><span class="pre">rgb</span></tt>.  See also <a class="reference internal" href="#RGB" title="RGB"><tt class="xref c c-func docutils literal"><span class="pre">RGB()</span></tt></a> for rgb encoding.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="GD::sprite__i.i.i.byte.byte.byte.byte">
+void <tt class="descclassname">GD::</tt><tt class="descname">sprite</tt><big>(</big>int <em>spr</em>, int <em>x</em>, int <em>y</em>, byte <em>image</em>, byte <em>palette</em>, byte <em>rot</em><em>=0</em>, byte <em>jk</em><em>=0</em><big>)</big><a class="headerlink" href="#GD::sprite__i.i.i.byte.byte.byte.byte" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set attributes of sprite <tt class="docutils literal"><span class="pre">spr</span></tt></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Param spr:</th><td class="field-body">sprite number, 0-255</td>
+</tr>
+<tr class="field"><th class="field-name">Param x:</th><td class="field-body">x coordinate, 0-511.  0 is left edge of screen.</td>
+</tr>
+<tr class="field"><th class="field-name">Param y:</th><td class="field-body">y coordinate, 0-511.  0 is top edge of screen.</td>
+</tr>
+<tr class="field"><th class="field-name">Param image:</th><td class="field-body">image number, 0-63</td>
+</tr>
+<tr class="field"><th class="field-name">Param palette:</th><td class="field-body">palette control 0-15</td>
+</tr>
+<tr class="field"><th class="field-name">Param rot:</th><td class="field-body">rotate/flip control 0-7</td>
+</tr>
+<tr class="field"><th class="field-name">Param jk:</th><td class="field-body">J/K collision select, 0-1</td>
+</tr>
+</tbody>
+</table>
+<p>For details on these attributes, see
+<a class="reference external" href="/files/gameduino/synth/doc/gen/poster.pdf">the reference poster</a> or <a class="reference internal" href="../hardware.html#htr-sprite"><em>Sprite graphics</em></a>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="GD::sprite2x2__i.i.i.byte.byte.byte.byte">
+void <tt class="descclassname">GD::</tt><tt class="descname">sprite2x2</tt><big>(</big>int <em>spr</em>, int <em>x</em>, int <em>y</em>, byte <em>image</em>, byte <em>palette</em>, byte <em>rot</em><em>=0</em>, byte <em>jk</em><em>=0</em><big>)</big><a class="headerlink" href="#GD::sprite2x2__i.i.i.byte.byte.byte.byte" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set attributes of four sprites in a 2x2 configuration.  (x,y) specifies the center of the group.
+Other arguments are as for <a class="reference internal" href="#GD::sprite__i.i.i.byte.byte.byte.byte" title="GD::sprite"><tt class="xref cpp cpp-func docutils literal"><span class="pre">GD::sprite()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="GD::waitvblank">
+void <tt class="descclassname">GD::</tt><tt class="descname">waitvblank</tt><big>(</big><big>)</big><a class="headerlink" href="#GD::waitvblank" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waits for the start of the vertical blanking period.  By waiting for vertical blanking:</p>
+<blockquote>
+<ul class="simple">
+<li>any animation is guaranteed to be smooth</li>
+<li>the sprite collision RAM is valid</li>
+</ul>
+</blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="GD::microcode__prog_ucharP.i">
+void <tt class="descclassname">GD::</tt><tt class="descname">microcode</tt><big>(</big>prog_uchar* <em>src</em>, int <em>count</em><big>)</big><a class="headerlink" href="#GD::microcode__prog_ucharP.i" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy <tt class="docutils literal"><span class="pre">count</span></tt> bytes from <a class="reference external" href="http://www.arduino.cc/en/Reference/PROGMEM">AVR flash memory</a> location <tt class="docutils literal"><span class="pre">src</span></tt>
+into the coprocessor&#8217;s instruction RAM, and restart the coprocessor.  The use of the coprocessor is
+described in <a class="reference internal" href="../coprocessor.html#coprocessor"><em>Coprocessor</em></a>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="GD::ascii">
+void <tt class="descclassname">GD::</tt><tt class="descname">ascii</tt><big>(</big><big>)</big><a class="headerlink" href="#GD::ascii" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a standard 8x8 ASCII font into character RAM.  This is useful for debugging and status display.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="GD::putstr__i.i.cCP">
+void <tt class="descclassname">GD::</tt><tt class="descname">putstr</tt><big>(</big>int <em>x</em>, int <em>y</em>, const char* <em>s</em><big>)</big><a class="headerlink" href="#GD::putstr__i.i.cCP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw string <tt class="docutils literal"><span class="pre">s</span></tt> at character screen position (x,y).  Assumes that a standard character set has been loaded, e.g. by <a class="reference internal" href="#GD::ascii" title="GD::ascii"><tt class="xref cpp cpp-func docutils literal"><span class="pre">GD::ascii()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="RGB">
+unsigned int <tt class="descname">RGB</tt><big>(</big>byte<em> r</em>, byte<em> g</em>, byte<em> b</em><big>)</big><a class="headerlink" href="#RGB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the 15-bit encoding of an RGB color.  <tt class="docutils literal"><span class="pre">r</span></tt>, <tt class="docutils literal"><span class="pre">g</span></tt> and <tt class="docutils literal"><span class="pre">b</span></tt> are 0-255.</p>
+</dd></dl>
+
+<p>Last modified $Date: 2011-05-13 11:32:42 -0700 (Fri, 13 May 2011) $</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <p class="logo"><a href="/sphinx/gameduino/">
+    <img class="logo" src="../_static/gdlogo.png" alt="Logo"/>
+  </a></p>
+  <p class="logo"><a href="/sphinx/index.html">
+    <img class="logo" src="../_static/tinylogo.png" alt="Logo"/>
+  </a></p>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search termKLAKKKs or a module, class or function name.
+    </p>
+</div>
+<div style="padding-left:40px;" >
+
+</div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011 James Bowman.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,42 @@
+.. _python:
+
+The Gameduino Python package
+----------------------------
+
+.. contents::
+
+The Gameduino Python package contains tools for Gameduino developers.  To install it on **Linux or Mac**::
+
+  sudo easy_install gameduino
+
+and on **Windows**, assuming you already installed `Python 2.7 <http://www.python.org/download/releases/2.7.1/>`_ and `setuptools <http://pypi.python.org/pypi/setuptools>`_::
+
+  cd \Python27\Scripts
+  easy_install PIL
+  easy_install PySerial
+  easy_install gameduino
+
+For graphics work, you will need the Python Imaging Library (PIL).
+It is quite popular so many systems have it installed. To check if
+you have it, from Python do::
+
+  >>> import Image
+  >>>
+
+.. automodule:: gameduino.prep
+  :members:
+
+.. automodule:: gameduino.sim
+
+.. autoclass:: gameduino.sim.Gameduino
+  :members:
+  :inherited-members:
+
+.. automodule:: gameduino.remote
+
+.. autoclass:: gameduino.remote.Gameduino
+  :members:
+  :inherited-members:
+
+
+Last modified $Date: 2011-06-11 16:44:02 -0700 (Sat, 11 Jun 2011) $

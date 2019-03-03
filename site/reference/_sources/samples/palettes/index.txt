@@ -1,0 +1,27 @@
+.. index:: 
+  pair: PALETTE4A, example
+  pair: PALETTE4B, example
+  pair: PALETTE16A, example
+  pair: PALETTE16B, example
+
+.. _palettes:
+
+palettes
+^^^^^^^^
+
+.. image:: palettes-screenshot.png
+  :scale: 33
+
+Each sprite has a 4-bit palette field.  This field controls how sprite image data is turned into a final color.
+There are four hardware 256-color palettes, two 16-color palettes,
+and two 4-color palettes.  This program displays the same sprite
+image using different values of the palette field.
+
+For 16-color mode the palette field selects which four bits are used for palette lookup.
+
+For 4-color mode the palette field selects which two bits are used for palette lookup.
+
+.. literalinclude:: ../../../files/gameduino/synth/sketches/palettes.pde
+  :language: c++
+
+Last modified $Date: 2011-05-13 11:32:42 -0700 (Fri, 13 May 2011) $

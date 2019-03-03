@@ -1,0 +1,113 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>interrupts &mdash; gameduino</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="top" title="gameduino" href="../../index.html" />
+    <link rel="up" title="Advanced techniques" href="../advanced.html" />
+    <link rel="next" title="split-screen scroll" href="../splitscreen/index.html" />
+    <link rel="prev" title="Advanced techniques" href="../advanced.html" /> 
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-19722717-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  </head>
+  <body>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="interrupts">
+<span id="index-0"></span><span id="id1"></span><h1>interrupts<a class="headerlink" href="#interrupts" title="Permalink to this headline">¶</a></h1>
+<p>Instead of using <a class="reference internal" href="../../GD/index.html#GD::waitvblank" title="GD::waitvblank"><tt class="xref cpp cpp-func docutils literal"><span class="pre">GD::waitvblank()</span></tt></a> to wait for the end of the frame, it can be more efficient
+to use interrupts to signal to the Arduino CPU that the frame has ended.  The Gameduino can do this
+using pin 2, an extra pin not involved in the regular SPI traffic.</p>
+<p>The scheme
+shown here is rather more general: it can trigger an interrupt on any specified
+raster line.  The special case of a vertical blanking interrupt is
+a raster interrupt at line 300.</p>
+<img alt="../../_images/diagram.png" src="../../_images/diagram.png" />
+<p>In this configuration, the Arduino sets pin 2 as an input, and uses <a class="reference external" href="http://arduino.cc/en/Reference/AttachInterrupt">attachInterrupt</a>
+to trigger an interrupt every time pin 2 rises.</p>
+<p>The Gameduino is configured to output on pin 2, and gives control of
+pin 2 to the coprocessor.</p>
+<p>On the coprocessor, the <tt class="docutils literal"><span class="pre">rasterinterrupt</span></tt> microprogram generates a high value on pin 2 whenever the raster
+passes a specified line.</p>
+<p>The Arduino sketch
+uses <a class="reference external" href="http://arduino.cc/en/Reference/AttachInterrupt">attachInterrupt</a>
+to monitor pin 2 and call function <tt class="docutils literal"><span class="pre">service</span></tt> when pin 2 rises.
+<tt class="docutils literal"><span class="pre">service</span></tt> here just changes the background color, loads the next
+value for the interrupt line, and returns.</p>
+<p>The result is a red bar between lines 150 and 170.</p>
+<p>Last modified $Date: 2011-05-13 11:32:42 -0700 (Fri, 13 May 2011) $</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <p class="logo"><a href="/sphinx/gameduino/">
+    <img class="logo" src="../../_static/gdlogo.png" alt="Logo"/>
+  </a></p>
+  <p class="logo"><a href="/sphinx/index.html">
+    <img class="logo" src="../../_static/tinylogo.png" alt="Logo"/>
+  </a></p>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search termKLAKKKs or a module, class or function name.
+    </p>
+</div>
+<div style="padding-left:40px;" >
+
+</div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011 James Bowman.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
+    </div>
+  </body>
+</html>

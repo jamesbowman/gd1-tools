@@ -1,0 +1,24 @@
+.. _distributors:
+
+Distributors
+------------
+
+We sell Gameduinos directly `in our store <store>`_.  The following distributors also carry Gameduino:
+
+Seeed Studio
+^^^^^^^^^^^^
+
+  .. image:: logo-seeed.jpg
+    :target: http://www.seeedstudio.com/depot/gameduino-a-game-adapter-for-microcontrollers-p-860.html
+
+Sparkfun
+^^^^^^^^
+
+  .. image:: logo-sparkfun.png
+    :target: http://www.seeedstudio.com/depot/gameduino-a-game-adapter-for-microcontrollers-p-860.html
+
+Watterott
+^^^^^^^^^
+
+  .. image:: logo-watterott.jpg
+      :target: http://www.seeedstudio.com/depot/gameduino-a-game-adapter-for-microcontrollers-p-860.html

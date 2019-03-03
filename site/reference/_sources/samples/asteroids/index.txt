@@ -1,0 +1,63 @@
+.. index::
+  pair: asteroids; demo
+
+.. _asteroids:
+
+asteroids
+^^^^^^^^^
+
+.. image:: asteroids-animated.gif
+
+.. raw:: html
+
+  <object width="480" height="385"><param name="movie" value="http://www.youtube.com/v/voWWytKXF9g?fs=1&amp;hl=en_US"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/voWWytKXF9g?fs=1&amp;hl=en_US" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="480" height="385"></embed></object>
+
+A version of the classic scrolling shooting space game, running on an Arduino in 27 Kbytes.
+
+The controller is four `Sparkfun arcade buttons <http://www.sparkfun.com/products/9180>`_ connected as:
+
+  +---+--------+
+  | 6 | Left   |
+  +---+--------+
+  | 5 | Right  | 
+  +---+--------+
+  | 4 | Thrust |
+  +---+--------+
+  | 3 | Fire   |
+  +---+--------+
+
+The background graphics - stars and planets -
+use about 130 characters.  Foreground graphics use about 75% of sprite RAM,
+because of the large number of rotations.  The game uses a 16-frame rotation
+sequence: the first four frames are stored in sprite RAM:
+
+.. image:: ../../../files/gameduino/synth/sketches/graphics/asteroid/rock1r.png
+
+and the remaining frames are generated using the hardware's sprite :ref:`rotate` bits.
+
+Asteroids uses hardware collision detection to track missile-rock
+collisions, and player-rock collisions.  To do this, it draws the
+sprites in the following order:
+
+ * player
+ * missiles
+ * rocks
+ * explosions
+
+After the sprites are drawn, the main loop waits for a frame then
+downloads the hardware's :ref:`collision` table.  Any rock sprites
+that are touching player or missile sprites have their ``collide``
+flag marked for the next cycle.  The game uses hardware's JK
+collision mode (:ref:`jkcollision`) to prevent rock-rock collisions
+from masking player- and missile-rock collisions.
+
+A :ref:`splitscreen` keeps the top and bottom borders stationary while scrolling the central section around the map.
+
+The sprites are mostly taken from the `SpriteLib GPL <http://www.flyingyogi.com/fun/spritelib.html>`_.
+All the graphics are compressed using the scheme described in
+:ref:`compression`.  This reduces their size by about 40%.
+
+.. literalinclude:: ../../../files/gameduino/synth/sketches/asteroids.pde
+  :language: c++
+
+Last modified $Date: 2011-05-13 11:32:42 -0700 (Fri, 13 May 2011) $

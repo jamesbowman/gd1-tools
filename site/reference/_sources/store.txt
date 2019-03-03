@@ -1,0 +1,110 @@
+.. _store:
+
+Store
+-----
+
+Shipping via USPS Priority Mail (1-3 days) is a flat $5.00 on all U.S. orders, $14 for international.
+
+.. raw:: html
+
+  <div> <!-- float container -->
+  <div style="float:left; width:30%;"></div>
+  <div style="clear:both;"></div>
+  <hr>
+  </div>
+
+.. image:: z1xeta.jpg
+  :align: right
+  :width: 200px
+
+Gameduino: $53
+^^^^^^^^^^^^^^
+
+.. raw:: html
+
+  <form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post">
+  <input type="hidden" name="cmd" value="_s-xclick">
+  <input type="hidden" name="hosted_button_id" value="FSRTFCA5NZTB4">
+  <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+  <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+  </form>
+
+Gameduino is the Arduino shield that turns your Arduino into a
+gaming system.
+
+This is the assembled and tested Gameduino; plug it into your Arduino
+and immerse yourself in 8-bit awesomeness.
+
+The Gameduino handles scrolling backgrounds, 256 sprites, and
+64-voice stereo sound.  While the Gameduino is handling the video
+and audio, the Arduino runs the controllers and gameplay.
+
+The GD library includes dozens of clear code
+:ref:`samples and demos <samples>`
+that show all its capabilities.
+
+.. raw:: html
+
+  <div> <!-- float container -->
+  <div style="float:left; width:30%;"></div>
+  <div style="clear:both;"></div>
+  <hr>
+  </div>
+
+.. image:: newposter.jpg
+  :align: right
+  :width: 200px
+
+Reference Poster: $6
+^^^^^^^^^^^^^^^^^^^^
+
+.. raw:: html
+
+  <form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post">
+  <input type="hidden" name="cmd" value="_s-xclick">
+  <input type="hidden" name="hosted_button_id" value="ZDJG57MURMB74">
+  <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+  <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+  </form>
+
+Know the whole machine.  The Gameduino quick reference poster gives you instant understanding of the graphics system.
+Covers background graphics, encoding, all the video registers, sprites, palettes, rotation, color encoding and collision detection.
+19 x 27" (USA orders), 11 x 17" (elsewhere), full color.
+
+.. raw:: html
+
+  <div> <!-- float container -->
+  <div style="float:left; width:30%;"></div>
+  <div style="clear:both;"></div>
+  <hr>
+  </div>
+
+.. image:: samples/asteroids/asteroids-screenshot.jpg
+  :align: right
+  :width: 200px
+
+Full developer kit: $113
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. raw:: html
+
+  <form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post">
+  <input type="hidden" name="cmd" value="_s-xclick">
+  <input type="hidden" name="hosted_button_id" value="WEUD5HEBM2QEJ">
+  <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+  <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+  </form>
+
+Everything you need to write games in a single package:
+
+ * A Gameduino
+ * An Arduino Uno, preloaded with the :ref:`asteroids` demo game
+ * An assembled and tested Sparkfun analog joystick
+ * The Reference poster
+
+.. raw:: html
+
+  <div> <!-- float container -->
+  <div style="float:left; width:30%;"></div>
+  <div style="clear:both;"></div>
+  </div>

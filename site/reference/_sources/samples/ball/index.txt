@@ -1,0 +1,28 @@
+.. index::
+  pair: ball; demo
+
+.. _ball:
+
+ball
+^^^^
+
+.. image:: ball-screenshot.png
+  :scale: 66
+
+.. raw:: html
+
+  <object width="400" height="300"><param name="movie" value="http://www.youtube.com/v/PA577-XZnhE&hl=en_US&feature=player_embedded&version=3"></param><param name="allowFullScreen" value="true"></param><param name="allowScriptAccess" value="always"></param><embed src="http://www.youtube.com/v/PA577-XZnhE&hl=en_US&feature=player_embedded&version=3" type="application/x-shockwave-flash" allowfullscreen="true" allowScriptAccess="always" width="400" height="300"></embed></object>
+
+A Gameduino version of the famous bouncing ball demo.  The ball is
+a large sprite, made from 44 16x16 hardware sprites.  The rotation
+animation is done using palette animation: the ball sprite uses 256
+colors, carefully arranged so that cycling the color palette between
+red and white gives a rotation effect.
+
+To get perfectly smooth animation, this program uses double-buffering - see :ref:`doublebuffer` for 
+details.
+
+.. literalinclude:: ../../../files/gameduino/synth/sketches/ball.pde
+  :language: c++
+
+Last modified $Date: 2011-05-13 11:32:42 -0700 (Fri, 13 May 2011) $

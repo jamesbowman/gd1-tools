@@ -1,0 +1,48 @@
+.. index::
+  pair: sample playback; example
+
+.. _cowbell:
+
+Sample playback
+^^^^^^^^^^^^^^^
+
+The Gameduino has a 64-voice synthesizer, and it can also play back samples.
+
+To do this,
+the Arduino loads the sample byte into the ``SAMPLE_L`` and ``SAMPLE_R``
+registers, and the Gameduino mixes the sample with the 64-voice synthesized audio.
+
+The simplest way to play a sample is to take the sample data and 
+blast it into the ``SAMPLE`` registers.  Here is the code to play an 8KHz sample:
+
+.. literalinclude:: ../../../files/gameduino/synth/sketches/audio.pder
+  :language: c++
+  :start-after: JCB-SIMPLESAMPLE-A
+  :end-before: JCB-SIMPLESAMPLE-B
+
+the resulting sound output: :download:`cowbell.wav`
+
+To play back samples without halting gameplay requires a
+sample buffer.
+You can
+use Arduino timer interrupts, but coordinating SPI writes from inside an interrupt service routine is
+fiddly.
+
+Or, use a 256-byte sample buffer in Gameduino memory, and a coprocessor microprogram to feed the samples into ``SAMPLE_L`` and ``SAMPLE_R``:
+
+.. literalinclude:: ../../../files/gameduino/synth/sketches/audio.pder
+  :language: c++
+  :start-after: JCB-BUFFERSAMPLE-A
+  :end-before: JCB-BUFFERSAMPLE-B
+
+The soundbuffer microprogram continuously plays back samples from the sample buffer, updating
+the read pointer at ``COMM+0`` as it sweeps through the buffer.
+
+.. literalinclude:: ../../../files/gameduino/synth/sketches/j1firmware/soundbuffer.fs
+  :language: none
+
+At the 8KHz rate, 254 samples is enough for 31 milliseconds of
+sound.  So if a game refills the sample buffer at least once during every 36 Hz frame, the
+audio playback will be continuous.
+
+Last modified $Date: 2011-05-13 11:32:42 -0700 (Fri, 13 May 2011) $

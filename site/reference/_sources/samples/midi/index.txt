@@ -1,0 +1,36 @@
+.. index::
+  pair: MIDI playback; example
+
+.. _midi:
+
+midi playback
+^^^^^^^^^^^^^
+
+.. image:: midi-screenshot.png
+
+.. raw:: html
+
+  <object width="480" height="385"><param name="movie" value="http://www.youtube.com/v/JMEIJHGvi7w?fs=1&amp;hl=en_US"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/JMEIJHGvi7w?fs=1&amp;hl=en_US" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="480" height="385"></embed></object>
+
+Given a short MIDI file,
+`this </files/gameduino/synth/sketches/proto/mont.py>`_
+command-line MIDI conversion utility writes the same music
+as a simple bytecode.
+
+The Arduino ``player`` sketch uses this simple bytecode to control music playback.
+As the player updates the synthesizer's 64 voices,
+it also updates the colored circles.
+Each one represents a voice, and
+the size of each circle shows the voice's amplitude.
+
+.. literalinclude:: ../../../files/gameduino/synth/sketches/player.pde
+  :language: c++
+
+The converted MIDI file is "MONT" by Morusque.  The music data takes about 9K of flash on the Arduino.
+
+.. raw:: html
+
+  <div xmlns:cc="http://creativecommons.org/ns#" about="urn:sha1:22UUMI54RKPKT363K47TDJKGQI3EPEQI"><a rel="cc:attributionURL" property="cc:attributionName" href="http://ccmixter.org/files/Nurykabe/10176"> Morusque</a> / <a rel="license" href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a></div>
+
+
+Last modified $Date: 2011-05-13 11:32:42 -0700 (Fri, 13 May 2011) $

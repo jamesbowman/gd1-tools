@@ -1,0 +1,36 @@
+.. index::
+  pair: scroll; example
+  pair: SCROLL_X; example
+
+.. _scroll:
+
+scroll
+^^^^^^
+
+.. image:: scroll-screenshot.png
+  :scale: 33
+
+.. raw:: html
+
+  <object width="400" height="300"><param name="movie" value="http://www.youtube.com/v/zgntI8CV34M?hl=en&fs=1"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/zgntI8CV34M?hl=en&fs=1" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="400" height="300"></embed></object>
+
+A short sketch showing the hardware's horizontal scrolling.
+The program scrolls an infinite randomly-generated background.
+
+The source graphics for the background:
+
+.. image:: platformer.png
+
+Every 64 pixels, the function ``draw_column()`` draws an 8-character
+(64 pixel) wide column by copying rectangles from this source image
+into the character video RAM.  This happens offscreen, a few
+characters to the right of the visible screen area.
+
+This demo uses no sprites, and the backgrounds use only 157 of the
+available 256 characters.  The whole demo uses only about 6K of Arduino
+flash, so there's plenty of scope for extension...
+
+.. literalinclude:: ../../../files/gameduino/synth/sketches/scroll.pde
+  :language: c++
+
+Last modified $Date: 2011-05-13 11:32:42 -0700 (Fri, 13 May 2011) $

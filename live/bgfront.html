@@ -1,0 +1,31 @@
+#def title: Background image upload
+#def business
+  <p>This utility encodes an image as a Gameduino character map.  A
+  summary of what is valid:
+  <ul>
+  <li>width and height must be multiple of 8
+  <li>each 8x8 character can use at most 4 colors (although this utility
+  will palettize each 8x8 cell if necessary)
+  <li>no more than 256 unique characters.
+  </ul>
+
+  See <a href="http://excamera.com/sphinx/gameduino/artists.html">Gameduino for Artists</a> for more details
+
+    <h2>Upload an image file</h2>
+    <form action="upload" method="post" enctype="multipart/form-data">
+    <table>
+    <tr><td>file:</td><td><input type="file" name="myFile" required="required"/></td></tr>
+    <tr><td>name:</td><td><input type="text" name="name" value="image" /></td></tr>
+    <tr><td>compress:</td><td><input type="checkbox" name="compress" value="compress" /></td></tr>
+    </table>
+    <p><input type="submit" />
+    </form>
+    <p>Some images that encode well:
+    <p>
+    <img src="http://excamera.com/sphinx/_images/platformer.png">
+    <img src="http://excamera.com/sphinx/_images/Wood32.png">
+    <img src="http://excamera.com/sphinx/_images/asteroid.png">
+    <p>
+    <img src="http://excamera.com/sphinx/_images/splitscreen.png">
+#end def
+#include "common.tmpl"

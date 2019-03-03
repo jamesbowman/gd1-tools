@@ -1,0 +1,144 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>FAQ &mdash; gameduino</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="top" title="gameduino" href="index.html" />
+    <link rel="next" title="Hardware Technical Reference" href="hardware.html" />
+    <link rel="prev" title="Gameduino: a game adapter for microcontrollers" href="index.html" /> 
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-19722717-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  </head>
+  <body>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="faq">
+<span id="id1"></span><h1>FAQ<a class="headerlink" href="#faq" title="Permalink to this headline">¶</a></h1>
+<p><strong>Is Gameduino compatible with all Arduinos?</strong></p>
+<p>Yes, it is just a regular shield, so works with Uno, Duemilanove, and the Mega.
+(Diecimila works also, but many of the demos and sample programs use more than
+16K of flash.)</p>
+<p><strong>Can the Gameduino+Arduino run on USB power or does it need an external power supply?</strong></p>
+<p>It can run on either.</p>
+<p><strong>Is it possible to have the game save states for high scores?</strong></p>
+<p>Yes, using <a class="reference external" href="http://www.arduino.cc/en/Reference/EEPROM">Arduino EEPROM</a>.
+EEPROM is quite small (1 Kbyte on the Uno, for example) but that&#8217;s plenty for a high-score table.</p>
+<p><strong>How fast can the Arduino write to Gameduino memory?</strong></p>
+<p>In the best case - a bulk transfer - the Arduino writes bytes via
+SPI directly into Gameduino RAM.  For a 16MHz Arduino this rate is
+1 Megabyte/s, peak.</p>
+<p><strong>Can I use the Gameduino with another microprocesor?</strong></p>
+<p>Yes, Gameduino needs power and the SPI connections.  See the
+<a class="reference internal" href="hardware.html#htr"><em>Hardware Technical Reference</em></a> for details.</p>
+<p><strong>Are there unused areas in the RAM?</strong></p>
+<p>Yes, there are a few addresses that don&#8217;t do anything.</p>
+<p><strong>Is it possible to reuse a sprite by changing its Y coordinate after the raster passes it?</strong></p>
+<p>Yes, definitely.  You can stretch a single sprite the whole height of the sceeen, for example.
+Raster chasing techniques like this really need to run on the coprocessor.</p>
+<p><strong>I&#8217;m interest in the coprocessor - can you recommend any primers on Forth?</strong></p>
+<p>The classics (both online now) are Brodie&#8217;s:</p>
+<p><a class="reference external" href="http://www.forth.com/starting-forth/">http://www.forth.com/starting-forth/</a></p>
+<p><a class="reference external" href="http://thinking-forth.sourceforge.net/">http://thinking-forth.sourceforge.net/</a></p>
+<p><strong>How fast can the coprocessor write to memory?</strong></p>
+<p>With a (value, pointer) pair on the stack a memory write takes two cycles, or 40 nanoseconds.</p>
+<p><strong>Is the coprocessor restricted to fetching instructions from 2b00-2bff?</strong></p>
+<p>Yes.  Main RAM is already doing triple-duty (video read, SPI r/w
+and coprocessor r/w) so it would be very difficult to also allow
+instruction fetch.  Hence the dedicated 256 byte area 2b00-2bff is
+the only place where the coprocessor can fetch instructions.</p>
+<p>However, the coprocessor can <em>write</em> to 2b00-2bff, so it can load
+fresh code from anywhere in memory. The copy function is about 32
+bytes.</p>
+<p><strong>Is it possible to reload the FPGA?</strong></p>
+<p>Yes, if you have a JTAG programmer.  The JTAG pins are on the labeled
+.1&#8221; headers on the board.  If you solder some header pins in you can
+use a JTAG programmer to update the FPGA.  You can also reload the onboard flash
+with a new boot
+image, see <a class="reference external" href="http://www.xilinx.com/support/documentation/application_notes/xapp974.pdf">Xilinx application note XAPP974</a>.</p>
+<p><strong>The SAMPLE_L and SAMPLE_R registers are documented as being signed sixteen bit words. Does this mean GD can play 16 bit samples</strong></p>
+<p>Yes, they are sixteen bits, because internal audio calculations are done at 16-bit precision, before being sent to the audio output at 8-bits. So GD can play 16-bit samples but you might not hear the difference.</p>
+<p><strong>To play 8 bit samples do I need to sign-extend the values to 16 bits?</strong></p>
+<p>To play 8-bit samples - as the <a class="reference internal" href="samples/cowbell/index.html#cowbell"><em>Sample playback</em></a> example does - you
+write the high byte of the SAMPLE register with the 8-bit signed
+value (i.e. -128 to +127) and ignore the low byte.</p>
+<p><strong>Is the Gameduino shield stackable?</strong></p>
+<p>Yes, it uses stackable headers, so you can put more shields on top of it.  Gameduino works fine with the Ethernet shield, but note that the Ethernet shield uses the ICSP pins, so needs to be the bottom shield in the stack:</p>
+<blockquote>
+<a class="reference internal image-reference" href="gd_ether.jpg"><img alt="gd_ether.jpg" src="gd_ether.jpg" /></a>
+</blockquote>
+<p>Last modified $Date: 2011-05-13 11:32:42 -0700 (Fri, 13 May 2011) $</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <p class="logo"><a href="/sphinx/gameduino/">
+    <img class="logo" src="_static/gdlogo.png" alt="Logo"/>
+  </a></p>
+  <p class="logo"><a href="/sphinx/index.html">
+    <img class="logo" src="_static/tinylogo.png" alt="Logo"/>
+  </a></p>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search termKLAKKKs or a module, class or function name.
+    </p>
+</div>
+<div style="padding-left:40px;" >
+
+</div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011 James Bowman.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
+    </div>
+  </body>
+</html>

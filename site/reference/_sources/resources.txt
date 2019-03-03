@@ -1,0 +1,10 @@
+Resources for creating media
+----------------------------
+
+There is an experimental online tool for character-encoding images at
+http://gameduino.com/live.
+
+http://www.zophar.net/utilities/fonts/8x8-font-archive.html
+
+
+Last modified $Date: 2011-05-13 11:32:42 -0700 (Fri, 13 May 2011) $

@@ -1,0 +1,214 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Asset Library &mdash; gameduino</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="top" title="gameduino" href="index.html" /> 
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-19722717-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  </head>
+  <body>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="asset-library">
+<span id="assetlibrary"></span><h1>Asset Library<a class="headerlink" href="#asset-library" title="Permalink to this headline">¶</a></h1>
+<p>The Gameduino has a small onboard flash memory.
+In addition to the FPGA boot image, this memory holds a small asset libary
+that holds some media useful for games and other applications.</p>
+<div class="section" id="reading-flash">
+<h2>Reading flash<a class="headerlink" href="#reading-flash" title="Permalink to this headline">¶</a></h2>
+<p>Gameduino&#8217;s flash is SPI-based, so you can do a series of SPI commands to read it.</p>
+<p>Firstly, enable the Flash SPI interface on pin 2:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">pinMode</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">OUTPUT</span><span class="p">);</span>
+<span class="n">digitalWrite</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">HIGH</span><span class="p">);</span>
+<span class="n">GD</span><span class="o">.</span><span class="n">wr</span><span class="p">(</span><span class="n">IOMODE</span><span class="p">,</span> <span class="s">&#39;F&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Now pin 2 enables the flash SPI interface, and you can (e.g.) read and print out the flash status:</p>
+<div class="highlight-python"><pre>digitalWrite(2, LOW);
+SPI.transfer(0xd7);   // read SPI flash status
+byte status = spix(0);
+digitalWrite(2, HIGH);
+Serial.println(status, HEX);</pre>
+</div>
+<p>The flash is an Atmel <a class="reference external" href="http://www.atmel.com/dyn/resources/prod_documents/doc3638.pdf">AT45DB021D</a>.
+Its addressing is a little odd.  The flash has pages of memory,
+each page is 264 bytes.  Addresses are formed from the page number
+and the page offset like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">page</span> <span class="o">*</span> <span class="mi">512</span> <span class="o">+</span> <span class="n">offset</span>
+</pre></div>
+</div>
+<p>where the page range is 0-1023 and the offset range is 0-263.</p>
+<p>To read bytes from flash into Arduino memory, you can use a simple function like this one:</p>
+<div class="highlight-python"><pre>static uint32_t flash_readn(byte *dst, uint32_t src, size_t n)
+{
+  digitalWrite(2, LOW);
+  SPI.transfer(0x03);   // array read command
+  SPI.transfer((byte)(src &gt;&gt; 16));
+  SPI.transfer((byte)(src &gt;&gt; 8));
+  SPI.transfer((byte)(src &gt;&gt; 0));
+  while (n--) {
+    *dst++ = SPI.transfer(0);
+    src++;
+    if ((511 &amp; (uint16_t)src) == 264)
+      src = src - 264 + 512;
+  }
+  digitalWrite(2, HIGH);
+  return src;
+}</pre>
+</div>
+<p>Note that this function takes care of the fiddly page pointer math, returning the address of the advanced pointer.</p>
+</div>
+<div class="section" id="reading-the-asset-library">
+<h2>Reading the asset library<a class="headerlink" href="#reading-the-asset-library" title="Permalink to this headline">¶</a></h2>
+<p>The asset library root directory is fixed at page 640, so is at flash address (512 * 640).  Directory entries are a 12-byte string name, with a byte length and flash address:</p>
+<div class="highlight-python"><pre>struct dirent {
+  char name[12];
+  uint16_t length;
+  uint32_t addr;
+};</pre>
+</div>
+<p>the end of directory is marked by an entry with a 0-length string.
+To search a directory for a specific name:</p>
+<div class="highlight-python"><pre>static byte find_name(uint32_t &amp;ptr, uint16_t &amp;len, uint32_t dirptr, char *name)
+{
+  while (true) {
+    dirptr = flash_readn((byte*)&amp;de, dirptr, sizeof(de));
+    if (de.name[0] == 0)
+      return 0;   // end of dir, no match found
+    if (strcmp(de.name, name) == 0) {
+      len = de.length;
+      ptr = de.addr;
+      return 1;
+    }
+  }
+}</pre>
+</div>
+<p>So to find the asset in directory &#8220;voice&#8221; called &#8220;ohdear&#8221;:</p>
+<div class="highlight-python"><pre>uint32_t root_ptr = 640 * 512L;
+uint32_t voice_ptr;
+uint16_t voice_len;
+find_name(voice_ptr, voice_len, root_ptr, "voice");
+uint32_t ohdear_ptr;
+uint16_t ohdear_len;
+find_name(ohdear_ptr, ohdear_len, voice_ptr, "ohdear");</pre>
+</div>
+</div>
+<div class="section" id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><pre>pickups
+  pal
+  img
+voice
+  ar
+  duino
+  game
+  go
+  nice
+  ohdear
+  over
+  ready
+fonts
+  font8x8
+  font16
+drumkit
+  bassdrum2
+  bassdrum4
+  clap
+  conga2
+  conga3
+  cowbell1
+  cymbal1
+  cymbal3
+  hihat1
+  hihat2
+  snaredrum2
+  snaredrum3</pre>
+</div>
+<p>The directory <tt class="docutils literal"><span class="pre">pickups</span></tt> contains the sprite palette (<tt class="docutils literal"><span class="pre">pal</span></tt>)
+and images (<tt class="docutils literal"><span class="pre">img</span></tt>) used in the <a class="reference internal" href="samples/sprites256/index.html#sprites256"><em>sprites256</em></a> sample.  Thanks
+to <a class="reference external" href="http://www.flyingyogi.com/fun/spritelib.html">SpriteLib GPL</a>.</p>
+<p>The directory <tt class="docutils literal"><span class="pre">drumkit</span></tt> contains various 8-bit samples of a drum kit. Thanks to <a class="reference external" href="http://www.drumsamples.org/">http://www.drumsamples.org/</a> and Colin Dooley.</p>
+<p>The directory <tt class="docutils literal"><span class="pre">voice</span></tt> contains various 8-bit voice samples, spoken
+by some guy.</p>
+<p>The directory <tt class="docutils literal"><span class="pre">fonts</span></tt> contains two fonts.  <tt class="docutils literal"><span class="pre">font8x8</span></tt> is for use in character maps, and <tt class="docutils literal"><span class="pre">font16</span></tt> is a 16x16 4-color font for loading into sprites.</p>
+</div>
+<div class="section" id="example-code">
+<h2>Example code<a class="headerlink" href="#example-code" title="Permalink to this headline">¶</a></h2>
+<p>The example &#8220;sample&#8221; in the audio section reads the asset library sound samples using the functions above, and plays back samples.  It is controlled by joystick.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <p class="logo"><a href="/sphinx/gameduino/">
+    <img class="logo" src="_static/gdlogo.png" alt="Logo"/>
+  </a></p>
+  <p class="logo"><a href="/sphinx/index.html">
+    <img class="logo" src="_static/tinylogo.png" alt="Logo"/>
+  </a></p>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search termKLAKKKs or a module, class or function name.
+    </p>
+</div>
+<div style="padding-left:40px;" >
+
+</div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011 James Bowman.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
+    </div>
+  </body>
+</html>

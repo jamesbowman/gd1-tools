@@ -1,0 +1,35 @@
+.. index::
+  pair: JK collision detection; example
+
+.. _jkcollision:
+
+jkcollision
+^^^^^^^^^^^
+
+.. image:: jkcollision-screenshot.png
+  :scale: 33
+
+.. raw:: html
+
+  <object width="400" height="300"><param name="movie" value="http://www.youtube.com/v/Y79h9qiugqQ?fs=1&amp;hl=en_US"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/Y79h9qiugqQ?fs=1&amp;hl=en_US" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="400" height="300"></embed></object>
+
+This demonstration shows use of the hardware's JK collision detection mode.  In this mode,
+each sprite belongs to either the J or K group, and collisions are only detected between different groups.
+
+Here the J sprites are drawn in pink, and K sprites are in green.
+
+Each colliding sprite is drawn in a darker color.  As the demonstration
+runs, green (K) sprites cover each other but do not count as a
+collision.  However when a green (K) sprite covers a pink (J) sprite,
+the hardware sets the sprite's collision flag.
+
+You can see the effect of switching off JK mode by changing this line in ``setup()``::
+
+  GD.wr(JK_MODE, 0);
+
+With this change, all sprite collisions - including green-green -
+will trigger the collision flag.
+
+.. literalinclude:: ../../../files/gameduino/synth/sketches/jkcollision.pde
+
+Last modified $Date: 2011-05-13 11:32:42 -0700 (Fri, 13 May 2011) $

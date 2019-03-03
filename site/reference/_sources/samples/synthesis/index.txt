@@ -1,0 +1,43 @@
+.. _synthesis:
+
+.. index::
+  pair: voice synthesis; demo
+  pair: fourier analysis
+  pair: frequency analysis
+  pair: Audacity
+
+voice synthesis
+^^^^^^^^^^^^^^^
+
+Gameduino's sound uses a 64-voice synthesizer.  Each voice can
+generate a simple sine wave at any frequency up to 8KHz.  Used
+separately, that's 64 simple sine-wave instruments.  But by combining
+them you can create more complex sounds.  By using all 64, you can
+create a surprisingly rich sound.
+
+One easy way of capturing sounds is to use Audacity's ``Frequency Analysis``
+function, saving the sound's spectrum as a file using ``Export``:
+
+.. image:: audacity.png
+  :scale: 50
+
+There is a function in the toolkit :func:`gameduino.prep.spectrum` that loads Audacity
+spectrum files, and returns a list of 64 voice settings.  Loading these settings - frequency
+and amplitude for all 64 voices - into the synthesizer bank is all it takes to
+play the sound.
+
+Here is a complex chord, recreated using the Gameduino:
+
+:download:`coldstart.wav`
+
+Inserting a short delay between the loading
+of each voice creates 
+the slow buildup.
+
+Another series of sounds, these ones taken from an 80s synth-pop hit:
+
+:download:`synth.wav`
+
+Name that tune...
+
+Last modified $Date: 2011-05-13 11:32:42 -0700 (Fri, 13 May 2011) $

@@ -1,0 +1,25 @@
+#def title: Encode complete
+#def business
+  <div>
+    Sprites '$name' encoded to #echo len($sprites)
+    frames, using $nbytes bytes
+  </div>
+  <style>
+    #selectable .ui-selecting { background: #FECA40; }
+    #selectable .ui-selected { background: #F39814; color: white; }
+    #selectable { list-style-type: none; margin: 0; padding: 0; }
+    #selectable li { margin: 3px; padding: 1px; float: left; width: 32px; height: 48px; font-size: 1em; text-align: center; }
+  </style>
+
+  <ol id="selectable">
+  #set $i = 0
+  #for $x,$y in $sprites
+    <li class="ui-state-default">$i<br><canvas id="can${x}_${y}" width="$width" height="$height"></canvas></li>
+    #set $i = $i + 1
+  #end for
+  </ol>
+  <div style="clear:both"></div>
+  #include "sketch.tmpl"
+  <script>$pagecode</script>
+#end def
+#include "common.tmpl"

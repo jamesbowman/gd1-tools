@@ -1,0 +1,31 @@
+.. index::
+  pair: bitmap; example
+
+.. _bitmap:
+
+bitmap
+^^^^^^
+
+.. image:: bitmap-screenshot.png
+  :scale: 33
+
+.. raw:: html
+
+  <object width="400" height="300"><param name="movie" value="http://www.youtube.com/v/5ueTd0hugDY?hl=en&fs=1"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/5ueTd0hugDY?hl=en&fs=1" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="400" height="300"></embed></object>
+
+Although Gameduino's graphics are sprite-based, with a little setup
+it can also output pixel-addressed graphics.
+
+This program shows a way of creating a 256x256 pixel 4-color bitmap window. 
+It does this by setting up all 256 sprites in a 16x16 grid, using a 4-color
+palette.  A similar setup is used by the :ref:`wireframe` demo.
+
+The function ``setpixel()`` computes the address of an (x,y) pixel in sprite image
+memory, and masks in the appropriate color value.
+
+The rest of the program repeatedly draws a triangle, moving the corners at each step.  Every once in a while it clears the screen and switches to a new four-color palette.
+
+.. literalinclude:: ../../../files/gameduino/synth/sketches/bitmap.pde
+  :language: c++
+
+Last modified $Date: 2011-05-13 11:32:42 -0700 (Fri, 13 May 2011) $
